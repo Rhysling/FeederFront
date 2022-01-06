@@ -1,0 +1,10 @@
+/node_modules/
+/public/build/
+/public-busted/
+
+public/plantpics/
+tools/
+
+/.vscode/
+.DS_Store
+

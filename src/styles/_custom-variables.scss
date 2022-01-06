@@ -1,0 +1,22 @@
+// Set your brand colors
+$main-color: rgb(70,69,5);
+$second-color: rgb(50,67,115);
+$text-color: #333;
+$text-reverse-color: #eee;
+$text-disabled: #999;
+
+$nav-bg-color: #d0d1cd;
+$nav-drop-bg-color: #eff0eb; // #f9f9f9;
+
+$beige-light: #d0d1cd;
+$beige-lighter: #eff0eb;
+
+$error-primary: #ff0033;
+$error-secondary: rgb(255, 212, 209);
+
+$bp-small: 450px;
+
+
+$link: $main-color;
+$link-visited: $main-color;
+$link-hover: darken($main-color, 15%);
