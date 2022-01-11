@@ -6,16 +6,13 @@
 	import Footer from "./components/Footer.svelte";
 
 	import Home from "./pages/Home.svelte";
-	import UserAdmin from "./pages/admin/UserAdmin.svelte";
+	//import UserAdmin from "./pages/admin/UserAdmin.svelte";
 
 	import { currentRoute, navFromUrl } from "./stores/route-store.js";
-	import { user } from "./stores/user-store.js";
+	//import { user } from "./stores/user-store.js";
 	
 	let slug = "/";
 	let page = "Home";
-
-	if ($user.userId)
-		wls.init();
 
 
 	onMount(() => {
@@ -24,8 +21,7 @@
 
 
 	let pages = {
-		Home,
-		UserAdmin
+		Home
 	};
 
 	$: {
@@ -43,20 +39,18 @@
 </script>
 
 <GlobalCss />
+<Header />
 <main>
-	<Header />
 	<svelte:component this={ pages[page] } />
-	<Footer {slug} />
-
 </main>
+<Footer />
 
 <style lang="scss">
   @import "./styles/_custom-variables.scss";
 
 	main {
-		background-color: #fff;
-		padding: 1em;
-		max-width: 800px;
+		background-color: $body-background;
+		padding: 0;
 		margin: 0 auto;
 	}
 

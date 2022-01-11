@@ -1,22 +1,27 @@
 // Set your brand colors
-$main-color: rgb(70,69,5);
-$second-color: rgb(50,67,115);
-$text-color: #333;
-$text-reverse-color: #eee;
-$text-disabled: #999;
 
-$nav-bg-color: #d0d1cd;
-$nav-drop-bg-color: #eff0eb; // #f9f9f9;
+$main-color:      rgb(31, 141, 214);
+$secondary-color: rgb(66, 184, 221); /* this is a light blue */
+$body-text:       #7f8c8d;
+$body-background: #ffffff;
+$dark-text:       #333;
+$dark-background: #2d3e50;
+$disabled-text:   #999;
 
-$beige-light: #d0d1cd;
-$beige-lighter: #eff0eb;
-
-$error-primary: #ff0033;
-$error-secondary: rgb(255, 212, 209);
-
-$bp-small: 450px;
+$color-success:   rgb(28, 184, 65); /* this is a green */
+$color-error:     rgb(202, 60, 60); /* this is a maroon */
+$color-error-bg:  rgb(255, 212, 209);
+$color-warning:   rgb(223, 117, 20); /* this is an orange */
 
 
-$link: $main-color;
-$link-visited: $main-color;
-$link-hover: darken($main-color, 15%);
+$gray-light:       lighten($dark-text, 79.5%);
+$gray-lighter:     lighten($dark-text, 90%); 
+
+$bp-small:          600px;
+$content-max-width: 600px;
+
+
+//** Global textual link color.
+$link-color:           $main-color;
+$link-visited-color:   $main-color;
+$link-hover-color:     darken($link-color, 15%);

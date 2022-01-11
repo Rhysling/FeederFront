@@ -9,47 +9,15 @@ let getBaseRoutes = (): Route => {
 		slug: "/",
 		children: [
 			{
-				title: "Botanica Plants",
-				page: "Plants",
-				slug: "/plants",
+				title: "My Feeds",
+				page: "MyFeeds",
+				slug: "/my-feeds",
 				children: []
 			},
 			{
-				title: "Plant Sale Calendar",
-				page: "Calendar",
-				slug: "/calendar",
-				children: []
-			},
-			{
-				title: "More...",
-				page: "More",
-				slug: "/more",
-				isExpanded: undefined,
-				children: [
-					{
-						title: "Interesting Links",
-						page: "Links",
-						slug: "/links",
-						children: []
-					},{
-						title: "About Botanica",
-						page: "About",
-						slug: "/about",
-						children: []
-					},
-					{
-						title: "Contact Us",
-						page: "Contact",
-						slug: "/contact",
-						children: []
-					}
-				]
-			},
-			{
-				title: "Shopping List",
-				page: "ShoppingList",
-				slug: "/shopping-list",
-				isHidden: true,
+				title: "Account",
+				page: "Account",
+				slug: "/account",
 				children: []
 			},
 			{
@@ -60,45 +28,17 @@ let getBaseRoutes = (): Route => {
 				isExpanded: undefined,
 				children: [
 					{
-						title: "Plant Admin",
-						navName: "Plant Admin",
-						page: "PlantAdmin",
-						slug: "/plant-admin",
-						isAdmin: true
-					},
-					{
-						title: "Plant Availability",
-						navName: "Availability",
-						page: "PlantAvailability",
-						slug: "/plant-availability",
-						isAdmin: true
-					},
-					{
-						title: "Calendar Admin",
-						navName: "Calendar Admin",
-						page: "CalendarAdmin",
-						slug: "/calendar-admin",
-						isAdmin: true
-					},
-					{
-						title: "Links Admin",
-						navName: "Links Admin",
-						page: "LinksAdmin",
-						slug: "/links-admin",
-						isAdmin: true
-					},
-					{
-						title: "Shopping Lists",
-						navName: "Shopping Lists",
-						page: "ShoppingListAdmin",
-						slug: "/shopping-list-admin",
-						isAdmin: true
-					},
-					{
 						title: "User Admin",
 						navName: "Users",
 						page: "UserAdmin",
 						slug: "/user-admin",
+						isAdmin: true
+					},
+					{
+						title: "Stats",
+						navName: "Stats",
+						page: "Stats",
+						slug: "/stats",
 						isAdmin: true
 					}
 				]
@@ -199,7 +139,7 @@ export const navFromUrl = function () {
 	if (r) {
 		currentSlug.set(pathName);
 		currentParams.set(p);
-		document.title = `Botanica - ${r.title}`;
+		document.title = `TF - ${r.title}`;
 	} else {
 		window.location.replace(window.location.origin);
 	}
@@ -219,7 +159,7 @@ export const navTo = function (e: MouseEvent | null, path: string, params?: any)
 	currentParams.set(params || {});
 
 	let r = findRoute(get(routes), path);
-	if (r) document.title = "Botanica - " + r.title;
+	if (r) document.title = "TF - " + r.title;
 };
 
 // Back Button

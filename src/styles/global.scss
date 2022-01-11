@@ -3,8 +3,24 @@
 @import "_custom-variables.scss";
 
 @font-face {
-  font-family: "Arrus-BT-Bold";
-  src: url("/assets/webfonts/Arrus-BT-Bold_4573.ttf") format("truetype");
+  font-family: "OpenSans";
+  src: url("/assets/webfonts/OpenSans-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("/assets/webfonts/OpenSans-Italic.ttf") format("truetype");
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("/assets/webfonts/OpenSans-SemiBold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
 }
 
 html, body {
@@ -25,24 +41,42 @@ html, body {
 }
 
 body {
-	color: $text-color;
-	margin: 0;
-	padding: 0;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	line-height: 1.7em;
+	color: $body-text;
+	font-family: OpenSans, Helvetica, Arial, sans-serif;
+	display: block;
 }
 
-a,
-a:visited {
-	color: rgb(0,100,200);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 label {
 	display: block;
+	color: $dark-background;
+	font-weight: normal;
+}
+
+img {
+	display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+	color: $link-color;
+	text-decoration: underline;
+
+	&:visited {
+		color: $link-visited-color;
+	}
+
+	&:hover {
+		color: $link-hover-color;
+		text-decoration: underline;
+	}
 }
 
 input, button, select, textarea {
@@ -57,27 +91,18 @@ input, button, select, textarea {
 }
 
 input:disabled {
-	color: $text-disabled;
+	color: $disabled-text;
 }
 
 @import "_buttons.scss";
 
-// Custom Classes
 
-/* .arc-head {
-	text-align: center;
-	margin: 0;
-	padding: 0 0 1rem 0;
-	border: 0;
-	color: $grey-darker;
-	font-size: 2.5rem; //36px;
-	font-family: "book antiqua", palatino, sans-serif;
+@media (max-width: $bp-small) {
 
-	@media screen and (max-width: $desktop) {
-		font-size: 2rem;
+	/* Decrease the body font size */
+	body {
+		font-size: 13px;
 	}
 
-	@media screen and (max-width: $tablet) {
-		font-size: 1.5rem;
-	}
-} */
+}
+

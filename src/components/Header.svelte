@@ -1,111 +1,129 @@
-<script>
-  import { currentRoute, navTo } from "../stores/route-store.js";
-  import Headroom from "./Headroom.svelte"; // Thanks to "svelte-headroom"
-  import Nav from "./Nav.svelte";
+<script lang="ts">
+  import { routes, currentRoute, navTo } from "../stores/route-store.js";
+
+  let isAuthenticated = true;
+  let fullName = "Test Name";
+  let isAdmin = true;
+  let showAdmin = false;
 
   $: slug = $currentRoute.slug;
 
 </script>
 
-<div class="page-head" class:subpage={slug != "/"}>
-  <a href="/" on:click={(e) => navTo(e, "/")}>
-    <img class="logo" src="./assets/img/botanica-logo-512x512.png" alt="Botanica" />
-  </a>
-  <div class="page-title">
-    <div class="botanica">Botanica</div>
-    <div class="page-name">{$currentRoute.title || $currentRoute.page}</div>
-  </div>
-  <img class="logo" src="./assets/img/botanica-logo-512x512.png" alt="Botanica" />
-</div>
-{#if slug == "/"}
-  <div class="subtitle">
-    A specialty nursery featuring rare, choice, and unusual perennials...<br>
-    as well as many old favorites.
-  </div>
-{/if}
+<div class="ap-menu">
+  {#if !showAdmin}
+    <div class="ap-menu-main">
+      <div class="ap-menu-heading"><a href="/">Twit Feeder</a></div>
+      <a class="ap-menu-logo" href="/"><img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" /></a>
+      {#if isAuthenticated}
+        <div class="ap-menu-text">{fullName}</div>
+      {/if}
+      <div class="ap-menu-sep">&nbsp;</div>
 
-<Headroom offset={ 110 }>
-  <Nav { slug } />
-</Headroom>
+      {#if isAuthenticated}
+        <a href="/Manage/MyFeeds">My Feeds</a>
+        <a href="/Manage/Account">Account</a>
+        <a href="/Account/LogOff">Sign Out</a>
+      {:else}
+        <a href="/Account/Login">Sign In/Sign Up</a>
+      {/if}
+    </div>
+  {:else}
+    <div class="ap-menu-admin">
+      <a href="/">&lt; Back</a>
+      <div class="ap-menu-sep">&nbsp;</div>
+      <a href="/Admin/Users">Users</a>
+      <a href="/Admin/Log">Log</a>
+    </div>
+  {/if}
+</div>
 
 <style lang="scss">
   @import "../styles/_custom-variables.scss";
 
-  .page-head {
+  .ap-menu {
+    width: 100%;
+    position: fixed;
+    top: 0;
+		left: 0;
+  }
+  .ap-menu-main {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-flow: row nowrap;
+    align-items: baseline;
+    background: $dark-background;
+
+    .ap-menu-logo {
+      display: none;
+    }
+
+    > div, a {
+      padding: 0.5rem 0.75rem;
+    }
   }
 
-  .logo {
+  a {
+    color: lighten($link-color, 25%);
     display: block;
-    width: clamp(50px, 22px + 11vw, 110px);
-    height: auto;
-    filter: drop-shadow(1px 1px 1px #333);
-  }
+    text-decoration: none;
+    white-space: nowrap;
 
-  .page-title {
-    font-family: 'Arrus-BT-Bold', 'Times New Roman', Times, serif;
-    filter: drop-shadow(1px 1px 1px #333);
-
-    .botanica {
-      font-size: clamp(30px, 11vw - 3px, 85px);
-      text-transform: uppercase;
-      text-align: center;
-      color: $second-color;
+    &:visited {
+      color: lighten($link-color, 25%);
     }
 
-    .page-name {
-      display: none;
-      text-align: center;
-      margin-top: -5px;
+    &:hover,
+    &:focus {
+      background: none;
+      border: none;
+      color: lighten($link-color, 45%);
+      text-decoration: none;
     }
   }
 
-  .subpage {
-    margin-bottom: 0.3rem;
+.ap-menu-heading {
+	color: white;
+	font-weight: 400;
+	font-size: 120%;
+	text-transform: uppercase;
+}
 
-    .logo {
-      width: clamp(40px, 10px + 11vw, 85px);
-    }
+.ap-menu-sep {
+	flex: 1 1 auto;
+}
 
-    .botanica {
-      font-size: 30px;
-      color: $second-color;
-    }
+.ap-menu-text {
+	top: 2px;
+  font-size: 90%;
+}
 
-    .page-name {
+
+@media screen and (max-width: $bp-small) {
+
+  .ap-menu {
+    position: static;
+  }
+
+  .ap-menu-heading {
+    display: none;
+  }
+
+  .ap-menu-main {
+    align-items: center;
+
+    .ap-menu-logo {
       display: block;
-      font-size: clamp(30px, 13vw - 50px, 45px);
-      color: darken($main-color, 5%);
-    }
-  }
-  
 
-  .subtitle {
-    font-weight: bold;
-    font-style: italic;
-    font-size: 0.75rem;
-    width:100%;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
-
-  @media screen and (max-width: $bp-small) {
-    .page-head {
-      display:block;
-
-      .botanica {
-        text-align: center;
-      }
-
-      .page-name {
-        text-align: center;
+      img {
+        max-width: 25px;
+        margin-top: 0.3rem;
       }
     }
 
-    .logo {
-      display: none;
+    > div, a {
+      padding: 0.25rem 0.5rem;
     }
   }
+}
+
 </style>

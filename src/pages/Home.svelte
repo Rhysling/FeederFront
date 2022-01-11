@@ -1,23 +1,22 @@
 <script lang="ts">
-	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
-  import { navTo } from "../stores/route-store.js";
-  import { isLoggedIn } from "../stores/user-store.js";
+	// import type { AxiosResponse } from "axios";
+  // import { httpClient as ax } from "../stores/httpclient-store";
+  // import { navTo } from "../stores/route-store.js";
+  // import { isLoggedIn } from "../stores/user-store.js";
   
-	let nextSale: ICalendar | null = null;
 
-	$ax.get("/api/Calendar/GetNext")
-		.then((response: AxiosResponse<ICalendar>) => nextSale = response.data)
-		.catch((err) => console.log({err}));
+	// $ax.get("/api/Calendar/GetNext")
+	// 	.then((response: AxiosResponse<ICalendar>) => nextSale = response.data)
+	// 	.catch((err) => console.log({err}));
 
 
-	let goToShoppingList = (e: MouseEvent) => {
-		e.preventDefault();
-		if ($isLoggedIn)
-			navTo(e, "/shopping-list");
-		else
-			() => {} //no-op
-	};
+	// let goToShoppingList = (e: MouseEvent) => {
+	// 	e.preventDefault();
+	// 	if ($isLoggedIn)
+	// 		navTo(e, "/shopping-list");
+	// 	else
+	// 		() => {} //no-op
+	// };
 
   // async function getWeather() {
 	// 	gettingWx = true;
@@ -28,228 +27,200 @@
   // }
 </script>
 
-<div class="content">
-	<div class="left">
-		<div class="card-oldfriend">
-			<img src="./assets/img/bench-350x230.jpg" alt="Hello, old friend" />
-			<div class="small">An old friend...</div>
+<div class="splash-container">
+	<div class="splash">
+		<div class="splash-logo">
+			<img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" />
 		</div>
-		<div class="card-special">
-			<div class="title">
-				Now Available at<br />
-				Seattle Audubon
-			</div>
-			<div>
-				<img src="https://picsum.photos/100/75" alt="placeholder" />
-				Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, fugiat, dolor pariatur, voluptate quo mollitia
-				error odit cupiditate perspiciatis sequi quas nobis quae aut sit deserunt harum fuga recusandae ab.
-			</div>
-		</div>
+		<p class="splash-subhead">
+			Twitter and other feeds in your RSS reader
+		</p>
 	</div>
-	<div class="right">
-		<div class="card-shop">
-			<div class="t1">Shop Online!</div>
-			<div class="t2">
-				<strong>Botanica Plants</strong> are now available for pickup in the Wallingford neighborhood (Seattle, WA).
-			</div>
-			<div>
-				Create your &quot;shopping list&quot; here. We will prepare your order, cooridnate with
-				you on any changes or adjustments, and let you know when it is ready for pickup.
-			</div>
-			<a href="/" on:click={(e) => goToShoppingList(e)}>Start your plant shopping list...</a>
-		</div>
-		<div>Placeholder</div>
-		<div class="card-calendar">
-			<div class="title">Next Plant Sale</div>
-			{#if nextSale}
-				{#if nextSale.isSpecial}
-					<div class="special-title">* * * Special Sale * * *</div>
-				{/if}
-				<div class="item" class:is-special={nextSale.isSpecial === true ? true : undefined}>
-					<div class="dates">
-						<div class="date">{nextSale.beginDateFormatted}</div>
-						{#if nextSale.endDate}
-						<div class="date-sep">through</div>
-						<div class="date">{nextSale.endDateFormatted}</div>
-						{/if}
-						<div class="time">{nextSale.eventTime}</div>
-					</div>
-					<div class="details">
-						<div class="title">{nextSale.title}</div>
-						<div class="description">{nextSale.description}</div>
-						<div class="location">{nextSale.location}</div>
-					</div>
-				</div>
-			{:else}
-			<div class="title">No Events Posted</div>
-			<div>Please check back again as plant sale season approaches.</div>
-			{/if}
-			<a
-				href="/"
-				on:click={(e) => navTo(e, "/calendar")}>See Calendar of Upcoming Plant Sales</a>
-		</div>
+</div>
+
+<div class="container">
+	<div class="content">
+		<ul>
+			<li>Begin</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam culpa non earum porro delectus doloribus nam et veniam ut tempora.</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+			<li>Stuff here</li>
+		</ul>
 	</div>
 </div>
 
 <style lang="scss">
 	@import "../styles/_custom-variables.scss";
 
-	.content {
-		display: flex;
-		// border: 1px solid black;
-		// padding: 1px;
-		margin-top: 2px;
-		font-size: 0.9rem;
-	}
-
-	.left, .right {
-		display: flex;
-		flex-flow: column nowrap;
-	}
-
-	.left {
-		flex: 1 1 40%;
-
-		& > div {
-			margin: 0 2px 2px 0;
-			padding: 0.3rem;
-		}
-	}
-
-	.right {
-		flex: 1 1 60%;
-
-		& > div {
-			margin: 0 0 2px 2px;
-			padding: 0.3rem;
-		}
-	}
-
-	.title {
-		font-weight: bold;
-		color: $main-color;
-		text-align: center;
+	.splash-container {
+		background: $main-color;
+		z-index: -1;
+		overflow: hidden;
 		width: 100%;
-		margin: 0.5rem 0;
+		height: 25rem;
+		top: 0;
+		left: 0;
+		position: fixed;
+
+	}
+	.splash {
+		width: min($content-max-width, 92.5%);
+		height: 200px;
+		margin: 6rem auto 0;
 	}
 
-	.card-oldfriend {
-		flex: 0 0 auto;
+	.splash-logo {
+		background-color: $body-background;
+		border: 3px solid $body-background;
+		padding: 1em 1.6em;
+		border-radius: 5px;
 
 		img {
 			display: block;
-			max-width: 100%;
-			height: auto;
+			max-width: 200px;
 			margin: 0 auto;
 		}
-		
-		.small {
-			font-size: 0.7rem;
-			text-align: center;
-			margin-top: 0.5rem;
-		}
 	}
 
-	.card-special {
-		flex: 1 0 auto;
-		border: 1px solid black;
-
-		img {
-			display: block;
-			float: right;
-			margin: 0 0 0.3rem 0.3rem;
-		}
-	}
-
-	.card-shop {
-		flex: 0 0 auto;
-		border: 1px solid black;
-
-		div {
-			margin-bottom: 0.5rem;
-		}
-
-		.t1 {
-			font-size: 1.1rem;
-			font-weight: bold;
-			text-align: center;
-			width: 100%;
-			margin: 0.5rem 0;
-		}
-
-		.t2 {
-			color: $second-color;
-		}
-
-		a {
-			display: block;
-		}
-	}
-
-	.card-calendar {
-		flex: 0 0 auto;
-		border: 1px solid black;
-		padding: 0.4rem;
-		
-		a {
-			display: block;
-		}
-
-		.dates {
-			text-align: center;
-		}
-
-		.date {
-      font-size: 0.9rem;
-    }
-
-    .date-sep {
-      font-size: 0.8rem;
-      padding-left: 2rem;
-      color: lighten($text-color, 5%);
-    }
-
-    .time {
-      font-size: 0.8rem;
-    }
-
-		
-    .title {
-      font-size: 1.1rem;
-			font-weight: bold;
-			text-align: center;
-			width: 100%;
-			margin: 0.5rem 0;
-    }
-
-    .description {
-      font-size: 0.9rem;
-			margin-bottom: 0.4rem;
-    }
-
-    .location {
-      font-size: 0.85rem;
-      color: #8B4513;
-    }
+	.splash-subhead {
+		color: $body-background;
+		letter-spacing: 0.05em;
+		opacity: 0.8;
+		text-align: center;
+		margin-top: 1rem;
+		text-transform: uppercase;
 	}
 
 	@media screen and (max-width: $bp-small) {
-		.content {
-			display: block;
-
-			.left {
-				display: none;
-			}
-
-			.right {
-				flex: 1 1 100%;
-
-				& > div {
-					margin: 0.2rem 0;
-					padding: 0.5rem;
-				}
-			}
+			
+		.splash-container {
+			position: static;
+			height: unset;
 		}
+
+		.splash {
+			width: 100%;
+			height: unset;
+			margin: 0;
+			padding: 0 1rem;
+			line-height: 1em;
+		}
+
+		.splash-logo {
+			display: none;
+		}
+
+		.splash-subhead {
+			margin: 1rem auto;
+		}
+
+	}
+
+	.container {
+		display: flex;
+		align-content: center;
+		justify-content: center;
+		width: 100%;
+		margin-top: 25rem;
+		background-color: pink;
+		border-top: 2px solid $dark-background;
+
+			@media screen and (max-width: $bp-small) {
+				margin-top: 0;
+			}
+
+	}
+
+	.content {
+		display: block;
+		padding: 1rem;
+		background-color: $body-background;
+		max-width: $content-max-width;
+	}
+
+	/*
+@media (max-width: $bp-small) {
+	.splash-subhead {
+		font-size: 13px;
+	}
+
+	.splash-container {
+		height: 280px;
+	}
+
+	.splash {
+		height: 100px;
+	}
+
+	img {
+		max-width: 100px;
+	}
+}
+
+
+@media (min-width: @bp-md-up) {
+
+	.splash-container {
+		height: 400px;
+	}
+
+	 We decrease the width of the .splash, since we have more width to work with
+	.splash {
+		width: 52%;
+		height: 200px;
+	}
+
+	.splash-head {
+		font-size: 250%;
+	}
+
+	.splash-head-logo {
+
+		img {
+			max-width: 200px;
+			max-height: 200px;
+		}
+	}
+}
+ */
+
+
+
+
+	@media screen and (max-width: $bp-small) {
+		
 
 	}
 

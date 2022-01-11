@@ -1,57 +1,41 @@
 @import "_custom-variables.scss";
 
+a.button,
 button {
-	color: $text-color;
-	background-color: #f4f4f4;
-	outline: none;
+	display: inline-block;
+	zoom: 1;
+	line-height: normal;
+	white-space: nowrap;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
+	user-select: none;
+	outline: 1px solid $dark-background;
+
+	color: $body-background;
+	background-color: $main-color;
 	border-radius: 5px;
 
+	&:not(:disabled):hover,
+	&:not(:disabled):focus {
+		background-image: linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+	}
+
+	&:not(:disabled):focus {
+			border: 2px solid $dark-text;
+	}
+
+	&:disabled {
+		color: $gray-light;
+		background-color: $gray-lighter;
+		cursor: default;
+	}
+
 	&.primary {
-		color: $text-reverse-color;
-		background-color: lighten($main-color, 5%);
+		font-size: 120%;
+	}
 
-		&:disabled {
-			color: #999;
-			background-color: #f4f4f4;
-		}
-
-		&:not(:disabled):hover {
-			background-color: darken($main-color, 0%);
-			cursor: pointer;
-		}
-
-		&:not(:disabled):active {
-			background-color: darken($main-color, 10%);
-		}
-
-		&:focus {
-			border: 1px solid $text-reverse-color;
-		}
+	&.small {
+		font-size: 70%;
 	}
 }
-
-button:disabled {
-	color: #999;
-}
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {	
-	border: 1px solid $second-color;
-}
-
-button:not(:disabled):hover {
-	border-color: #666;
-	background-color: $second-color;
-	color: $text-reverse-color;
-	cursor: pointer;
-}
-
-button.secondary {
-	color: lighten($text-color, 10%);
-	background-color: #f4f4f4;
-	outline: none;
-}
-

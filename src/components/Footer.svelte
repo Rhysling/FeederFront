@@ -1,9 +1,6 @@
 <script>
 
-  export let slug = "/";
-
   let yr = new Date().getFullYear() - 2000;
-  let isFooter = true;
 
   let scrollToTop = () => {
     window.scroll({
@@ -16,37 +13,37 @@
 </script>
 
 <footer>
-  <div class="f1">
-    {#if slug == "/"}
-    Remember, plant selections change throughout the season!
-    {:else}
-    <hr style="width:100%" />
-    {/if}
-  </div>
-  <div class="f2">
-    <a href="/" on:click|preventDefault={scrollToTop}>Top</a> | &copy;2001-{yr} Pamela Harlow
-  </div>
-  <br />
+  <a href="/" on:click|preventDefault={scrollToTop}>Top</a> | &copy;2001-{yr} TwitFeeder
 </footer>
 
 
-<style>
+<style lang="scss">
+  @import "../styles/_custom-variables.scss";
 
-  .f1 {
-    font-family: 'Arrus-BT-Bold', 'Times New Roman', Times, serif;
-    font-weight: bold;
-    font-size: 1rem;
+  footer {
+    line-height: 1.2em;
+    padding: 0.5rem 0;
+    background-color: $dark-background;
     text-align: center;
-    width: 100%;
-    margin-top: 1rem;
-
+    vertical-align: middle;
   }
 
-  .f2 {
-    font-size: 0.75rem;
-    text-align: center;
-    width: 100%;
-    margin-top: 0.5rem;
+  a {
+    color: lighten($link-color, 25%);
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:visited {
+      color: lighten($link-color, 25%);
+    }
+
+    &:hover,
+    &:focus {
+      background: none;
+      border: none;
+      color: lighten($link-color, 45%);
+      text-decoration: none;
+    }
   }
 
 </style>
