@@ -3,6 +3,7 @@
 /public-busted/
 
 tools/
+buildlog.txt
 
 /.vscode/
 .DS_Store

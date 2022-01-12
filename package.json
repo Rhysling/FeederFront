@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "dev": "rollup -c -w 2>&1 | tee buildlog.txt",
     "start": "sirv public",
     "validate": "svelte-check",
     "bust": "node bust.js"
