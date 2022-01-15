@@ -29,6 +29,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@auth0/auth0-spa-js": "^1.19.4",
     "axios": "0.21.1",
     "sirv-cli": "^2.0.0"
   }
