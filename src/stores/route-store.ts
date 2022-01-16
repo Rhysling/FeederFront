@@ -86,8 +86,8 @@ function findRoute(routeRoot: Route, slug: string): Route | undefined {
 export const routes = derived(user, ($user) => {
 	let r = getBaseRoutes();
 
-	if (!$user.isAdmin)
-		r = filterAdminRoutes(r)
+	// if (!$user.isAdmin)
+	// 	r = filterAdminRoutes(r)
 
 	return r;
 });

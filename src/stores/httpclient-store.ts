@@ -9,16 +9,16 @@ export const httpClient = derived(
 	$user => {
     let opts = { baseURL };
 
-    if ($user.token)
-      opts = { ...opts, ...{ headers: { Authorization: $user.token } } };
+    // if ($user.token)
+    //   opts = { ...opts, ...{ headers: { Authorization: $user.token } } };
 
     let instance = axios.create(opts);
 
     instance.interceptors.response.use(
       res => res,
       err => {
-        if (err.response.status === 401)
-          user.logOut();
+        // if (err.response.status === 401)
+        //   user.logOut();
 
         return Promise.reject(err);
       }

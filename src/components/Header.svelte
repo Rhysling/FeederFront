@@ -2,100 +2,23 @@
   import { slide } from 'svelte/transition';
   import { onMount } from 'svelte';
 
-  import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
+  import { user } from "../stores/user-store";
   //import { routes, currentRoute, navTo } from "../stores/route-store.js";
 
-  let isAuthenticated = false;
-  let fullName = "Test Name";
   let showAdmin = false;
 
-  // *** auth0 ***
-  let auth0: Auth0Client | null = null;
-  let config = {
-    "domain": "dev-rbsjv5fo.us.auth0.com",
-    "client_id": "LDAABMhgOTuV8Ixu83phtk0BcIG3zrCm"
-  };
-
-
-  /**
-   * Starts the authentication flow
-   */
-  const login = async (targetUrl: string | null) => {
-    try {
-      console.log("Logging in", targetUrl);
-
-      const options = {
-        redirect_uri: window.location.origin,
-        appState: targetUrl ? { targetUrl } : undefined
-      };
-      if (auth0)
-        await auth0.loginWithRedirect(options);
-
-      isAuthenticated = true;
-
-    } catch (err) {
-      console.log("Log in failed", err);
-      isAuthenticated = false;
-    }
-  };
-
-  /**
-   * Executes the logout flow
-   */
-  const logout = () => {
-    try {
-      console.log("Logging out");
-
-      if (auth0) {
-        isAuthenticated = false;
-        auth0.logout({
-          returnTo: window.location.origin
-        });
-      }
-        
-    } catch (err) {
-      console.log("Log out failed", err);
-    }
-  };
   
-  /**
-   * Initializes the Auth0 client
-   */
-  const configureClient = async () => {
-    auth0 = await createAuth0Client(config);
-  };
-
-  /**
-   * Checks to see if the user is authenticated. If so, `fn` is executed. Otherwise, the user
-   * is prompted to log in
-   * @param {*} fn The function to execute if the user is logged in
-   */
-  // const requireAuth = async (fn, targetUrl) => {
-  //   const isAuthenticated = await auth0.isAuthenticated();
-
-  //   if (isAuthenticated) {
-  //     return fn();
-  //   }
-
-  //   return login(targetUrl);
-  // };
-
-
-
-
 	onMount(async () => {
 		console.log("The component has mounted.");
 
-    await configureClient();
+    await user.initAuth0Async();
 
-    isAuthenticated = !!auth0 && await auth0.isAuthenticated();
-
-    if (isAuthenticated && auth0) {
+    if ($user.isAuthenticated) {
       console.log("Mount: User is authenticated.");
       window.history.replaceState({}, document.title, window.location.pathname);
       //updateUI();
-      const user = await auth0.getUser();
-      console.log({user: user});
+      const id = await user.getIdTokenClaimsAsync();
+      console.log({idTokenClaims: id});
 
       return;
     }
@@ -108,27 +31,28 @@
     if (shouldParseResult) {
       console.log("Mount: Parsing redirect.");
 
-      if (auth0) {
-        try {
-          const result = await auth0.handleRedirectCallback();
+      try {
+        const result = await user.handleRedirectCallbackAsync();
 
-          console.log({redirectResult: result})
-          console.log("Logged in!");
-          isAuthenticated = true;
+        console.log({redirectResult: result})
+        console.log("Logged in!");
+        $user.isAuthenticated = true;
 
-          const user = await auth0.getUser();
-          console.log({ user });
+        //const u= await auth0.getUser();
 
-          let claims: any = await auth0.getIdTokenClaims();
-          console.log({ claims });
+        let claims:any = await user.getIdTokenClaimsAsync();
+        console.log({ claims });
 
-          let roles = (claims||{})["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [];
-          console.log("Roles: " + roles.join(","));
-          
+        let roles = (claims||{})["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [];
+        console.log("Roles: " + roles.join(","));
+        
+        let token = await user.getAuthTokenAsync();
+        console.log({token});
 
-        } catch (err) {
-          console.log("Error parsing redirect:", err);
-        }
+        console.log({user: $user});
+
+      } catch (err) {
+        console.log("Error parsing redirect:", err);
       }
 
       window.history.replaceState({}, document.title, "/");
@@ -145,17 +69,18 @@
     <div transition:slide class="ap-menu-main">
       <div class="ap-menu-heading"><a href="/">Twit Feeder</a></div>
       <a class="ap-menu-logo" href="/"><img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" /></a>
-      {#if isAuthenticated}
-        <div class="ap-menu-text">{fullName}</div>
+      {#if $user.isAuthenticated}
+        <div class="ap-menu-text">{$user.fullName}</div>
       {/if}
       <div class="ap-menu-sep">&nbsp;</div>
 
-      {#if isAuthenticated}
+      {#if $user.isAuthenticated}
         <a href="/Manage/MyFeeds">My Feeds</a>
-        <a href="/" on:click={(e) => {e.preventDefault(); showAdmin = !showAdmin; }}>Account</a>
-        <a href="/" on:click={(e) => {e.preventDefault(); logout(); }}>Sign Out</a>
+        <a href="/" on:click|preventDefault={ () => {} }>Account</a>
+        {#if $user.isAdmin}<a href="/" on:click|preventDefault={ () => showAdmin = !showAdmin }>Admin</a>{/if}
+        <a href="/" on:click|preventDefault={ () => user.logout() }>Sign Out</a>
       {:else}
-        <a href="/" on:click={async (e) => {e.preventDefault(); await login(null); }}>Sign In/Sign Up</a>
+        <a href="/" on:click|preventDefault={ async () => await user.loginAsync(null) }>Sign In/Sign Up</a>
       {/if}
     </div>
   {:else}
