@@ -30,15 +30,15 @@ let getBaseRoutes = (): Route => {
 					{
 						title: "User Admin",
 						navName: "Users",
-						page: "UserAdmin",
-						slug: "/user-admin",
+						page: "AdminUsers",
+						slug: "/admin-users",
 						isAdmin: true
 					},
 					{
-						title: "Stats",
-						navName: "Stats",
-						page: "Stats",
-						slug: "/stats",
+						title: "Log",
+						navName: "Log",
+						page: "AdminLog",
+						slug: "/admin-log",
 						isAdmin: true
 					}
 				]

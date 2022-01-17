@@ -9,8 +9,8 @@ export const httpClient = derived(
 	$user => {
     let opts = { baseURL };
 
-    // if ($user.token)
-    //   opts = { ...opts, ...{ headers: { Authorization: $user.token } } };
+    if ($user.authToken)
+      opts = { ...opts, ...{ headers: { Authorization: `Bearer ${$user.authToken}` } } };
 
     let instance = axios.create(opts);
 
@@ -18,7 +18,7 @@ export const httpClient = derived(
       res => res,
       err => {
         // if (err.response.status === 401)
-        //   user.logOut();
+        //   user.logout();
 
         return Promise.reject(err);
       }

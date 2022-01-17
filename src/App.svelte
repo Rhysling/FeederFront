@@ -6,7 +6,10 @@
 	import Footer from "./components/Footer.svelte";
 
 	import Home from "./pages/Home.svelte";
-	//import UserAdmin from "./pages/admin/UserAdmin.svelte";
+	import MyFeeds from "./pages/MyFeeds.svelte";
+	import Account from "./pages/Account.svelte";
+	import AdminUsers from "./pages/AdminUsers.svelte";
+	import AdminLog from "./pages/AdminLog.svelte";
 
 	import { currentRoute, navFromUrl } from "./stores/route-store.js";
 	//import { user } from "./stores/user-store.js";
@@ -21,11 +24,15 @@
 
 
 	let pages = {
-		Home
+		Home,
+		MyFeeds,
+		Account,
+		AdminUsers,
+		AdminLog
 	};
 
 	$: {
-		slug = $currentRoute.slug;
+		slug = $currentRoute.slug ?? "/";
 		page = $currentRoute?.page ?? "Home";
 		//console.log({currentRoute: $currentRoute});
 

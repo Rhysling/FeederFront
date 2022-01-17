@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
 
   import { user } from "../stores/user-store";
-  //import { routes, currentRoute, navTo } from "../stores/route-store.js";
+  import { currentSlug, navTo } from "../stores/route-store.js";
 
   let showAdmin = false;
 
@@ -16,9 +16,6 @@
     if ($user.isAuthenticated) {
       console.log("Mount: User is authenticated.");
       window.history.replaceState({}, document.title, window.location.pathname);
-      //updateUI();
-      const id = await user.getIdTokenClaimsAsync();
-      console.log({idTokenClaims: id});
 
       return;
     }
@@ -35,19 +32,17 @@
         const result = await user.handleRedirectCallbackAsync();
 
         console.log({redirectResult: result})
-        console.log("Logged in!");
-        $user.isAuthenticated = true;
 
-        //const u= await auth0.getUser();
+        let isAuth = await user.getIsAuthenticatedAsync();
 
-        let claims:any = await user.getIdTokenClaimsAsync();
-        console.log({ claims });
-
-        let roles = (claims||{})["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [];
-        console.log("Roles: " + roles.join(","));
-        
-        let token = await user.getAuthTokenAsync();
-        console.log({token});
+        if (isAuth) {
+          console.log("Logged in on redirect!");
+          await user.getIdTokenClaimsAsync();
+          await user.getAuthTokenAsync();
+        }
+        else {
+          console.log("FAILED login on redirect!");
+        }
 
         console.log({user: $user});
 
@@ -67,16 +62,30 @@
 <div class="ap-menu">
   {#if !showAdmin}
     <div transition:slide class="ap-menu-main">
-      <div class="ap-menu-heading"><a href="/">Twit Feeder</a></div>
-      <a class="ap-menu-logo" href="/"><img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" /></a>
+      <div class="ap-menu-heading">
+        <a
+          href="/"
+          on:click={(e) => navTo(e, "/")}
+          class:selected={("/" === $currentSlug) ? true : undefined}>Twit Feeder</a>
+      </div>
+      <a
+        class="ap-menu-logo" href="/"
+        on:click={(e) => navTo(e, "/")}
+        class:selected={("/" === $currentSlug) ? true : undefined}><img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" /></a>
       {#if $user.isAuthenticated}
         <div class="ap-menu-text">{$user.fullName}</div>
       {/if}
       <div class="ap-menu-sep">&nbsp;</div>
 
       {#if $user.isAuthenticated}
-        <a href="/Manage/MyFeeds">My Feeds</a>
-        <a href="/" on:click|preventDefault={ () => {} }>Account</a>
+        <a
+          href="/my-feeds"
+          on:click={(e) => navTo(e, "/my-feeds")}
+          class:selected={("/my-feeds" === $currentSlug) ? true : undefined}>My Feeds</a>
+        <a
+          href="/account"
+          on:click={(e) => navTo(e, "/account")}
+          class:selected={("/account" === $currentSlug) ? true : undefined}>Account</a>
         {#if $user.isAdmin}<a href="/" on:click|preventDefault={ () => showAdmin = !showAdmin }>Admin</a>{/if}
         <a href="/" on:click|preventDefault={ () => user.logout() }>Sign Out</a>
       {:else}
@@ -87,8 +96,14 @@
     <div transition:slide class="ap-menu-admin">
       <a href="/" on:click={(e) => {e.preventDefault(); showAdmin = !showAdmin; }}>&lt; Back</a>
       <div class="ap-menu-sep">&nbsp;</div>
-      <a href="/Admin/Users">Users</a>
-      <a href="/Admin/Log">Log</a>
+      <a
+          href="/admin-users"
+          on:click={(e) => navTo(e, "/admin-users")}
+          class:selected={("/admin-users" === $currentSlug) ? true : undefined}>Users</a>
+        <a
+          href="/admin-log"
+          on:click={(e) => navTo(e, "/admin-log")}
+          class:selected={("/admin-log" === $currentSlug) ? true : undefined}>Log</a>
     </div>
   {/if}
 </div>
@@ -124,6 +139,11 @@
     display: block;
     text-decoration: none;
     white-space: nowrap;
+
+    &.selected {
+      font-weight: bold;
+      cursor: default;
+    }
 
     &:visited {
       color: lighten($link-color, 25%);

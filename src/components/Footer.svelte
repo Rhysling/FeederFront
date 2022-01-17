@@ -26,6 +26,8 @@
     background-color: $dark-background;
     text-align: center;
     vertical-align: middle;
+    position: sticky;
+    top: calc(100vh - 4rem);
   }
 
   a {

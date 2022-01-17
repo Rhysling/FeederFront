@@ -1,13 +1,34 @@
 <script lang="ts">
-	// import type { AxiosResponse } from "axios";
-  // import { httpClient as ax } from "../stores/httpclient-store";
+	import Container from "../components/Container.svelte";
+
+	import type { AxiosResponse } from "axios";
+  import { httpClient as ax } from "../stores/httpclient-store";
   // import { navTo } from "../stores/route-store.js";
   // import { isLoggedIn } from "../stores/user-store.js";
   
+	let unsecuredVal = "Empty";
+	let securedVal = "Empty";
+	let adminVal = "Empty";
 
-	// $ax.get("/api/Calendar/GetNext")
-	// 	.then((response: AxiosResponse<ICalendar>) => nextSale = response.data)
-	// 	.catch((err) => console.log({err}));
+	const getUnsecured = () => {
+		$ax.get("/api/Test/GetUnsecuredValue")
+			.then((response: AxiosResponse<string>) => unsecuredVal = response.data)
+			.catch((err) => console.log({getUnsecuredErr: err}));
+	};
+
+	const getSecured = () => {
+		$ax.get("/api/Test/GetSecuredValue")
+			.then((response: AxiosResponse<string>) => securedVal = response.data)
+			.catch((err) => console.log({getSecuredErr: err}));
+	};
+
+	const getAdmin = () => {
+		$ax.get("/api/Test/GetAdminValue")
+			.then((response: AxiosResponse<string>) => adminVal = response.data)
+			.catch((err) => console.log({getAdminErr: err}));
+	};
+
+
 
 
 	// let goToShoppingList = (e: MouseEvent) => {
@@ -38,48 +59,39 @@
 	</div>
 </div>
 
-<div class="container">
-	<div class="content">
-		<ul>
-			<li>Begin</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam culpa non earum porro delectus doloribus nam et veniam ut tempora.</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-			<li>Stuff here</li>
-		</ul>
-	</div>
-</div>
+<Container ishome={true}>
+	{#if false}
+	<h1>Test request no auth</h1>
+	<div>Unsecured value: { unsecuredVal }</div>
+	<button on:click|preventDefault={ getUnsecured }>Get Unsecured</button>
+
+	<h1>Test request with auth</h1>
+	<div>Secured value: { securedVal }</div>
+	<button on:click|preventDefault={ getSecured }>Get Secured</button>
+
+	<h1>Test requires admin</h1>
+	<div>Unsecured value: { adminVal }</div>
+	<button on:click|preventDefault={ getAdmin }>Get Admin</button>
+	{/if}
+	<ul>
+		<li>Begin</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam culpa non earum porro delectus doloribus nam et veniam ut tempora.</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+		<li>Stuff here</li>
+	</ul>
+</Container>
 
 <style lang="scss">
 	@import "../styles/_custom-variables.scss";
@@ -148,6 +160,7 @@
 
 	}
 
+/*
 	.container {
 		display: flex;
 		align-content: center;
@@ -170,7 +183,7 @@
 		max-width: $content-max-width;
 	}
 
-	/*
+	
 @media (max-width: $bp-small) {
 	.splash-subhead {
 		font-size: 13px;
@@ -214,9 +227,7 @@
 		}
 	}
 }
- */
-
-
+*/
 
 
 	@media screen and (max-width: $bp-small) {

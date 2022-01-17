@@ -40,6 +40,11 @@ const u = writable<IUserInfo>(getEmptyU());
   auth0 = await createAuth0Client(getSettings(app_isProduction).auth0);
   let isAuthenticated = await auth0.isAuthenticated();
 
+  if (isAuthenticated) {
+    await getIdTokenClaimsAsync();
+    await getAuthTokenAsync();
+  }
+
   u.update(a => {
     a.isAuthenticated = isAuthenticated
     return a;
@@ -67,10 +72,7 @@ const loginAsync = async (targetUrl: string | null | undefined) => {
 
   } catch (err) {
     console.log("Login failed", err);
-    u.update(a => {
-      a.isAuthenticated = false;
-      return a;
-    });
+    u.set(getEmptyU());
   }
 };
 
@@ -80,13 +82,9 @@ const loginAsync = async (targetUrl: string | null | undefined) => {
 const logout = () => {
   try {
     console.log("Logging out");
-
+    u.set(getEmptyU());
+	
     if (auth0) {
-      u.update(a => {
-        a.isAuthenticated = false;
-        return a;
-      });
-
       auth0.logout({
         returnTo: window.location.origin
       });
@@ -117,6 +115,19 @@ const requireAuthAsync = async (fn: Function, targetUrl: string | null | undefin
   }
 
   return await loginAsync(targetUrl);
+};
+
+const getIsAuthenticatedAsync = async () => {
+  if (!auth0) return false;
+
+  let isAuthenticated = await auth0.isAuthenticated();
+
+  u.update(a => {
+    a.isAuthenticated = isAuthenticated;
+    return a;
+  });
+
+  return isAuthenticated;
 };
 
 
@@ -170,6 +181,7 @@ export const user = {
   loginAsync,
   logout,
   requireAuthAsync,
+  getIsAuthenticatedAsync,
   getIdTokenClaimsAsync,
   getAuthTokenAsync,
   handleRedirectCallbackAsync
