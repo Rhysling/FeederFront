@@ -1,0 +1,188 @@
+<script lang="ts">
+  
+	import type { AxiosResponse } from "axios";
+  import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
+  import "../js/copy-to-clipboard";
+  
+	interface IFeedBatch {
+		feedType: string;
+		feeds: IFeed[];
+	}
+
+	export let userId = "public-user";
+	export let isEdit = false;
+
+	let feeds: IFeed[] = [];
+	let feedBatches: IFeedBatch[] = [];
+	let userInfo: IUserInfo | undefined;
+	let feedListTitle = "";
+	let burl = getBaseURL();
+
+
+	const getFeedsAsync = async (uid: string) => {
+		try {
+			const response: AxiosResponse<IFeed[]> = await $ax.get(`/api/User/GetFeedsForUser/${uid}`);
+			return response.data;
+		}
+		catch (error) {
+			console.error(error);
+		}
+	};
+
+	const getUserInfoAsync = async (uid: string) => {
+		try {
+			const response: AxiosResponse<IUserInfo> = await $ax.get(`/api/User/GetUserInfo/${uid}`);
+			return response.data;
+		}
+		catch (error) {
+			console.error(error);
+		}
+	};
+
+	const loadFeeds = async (uid: string) => {
+		feeds = await getFeedsAsync(uid) ?? [];
+		if (!feeds.length) return;
+
+		makeBatches();
+	};
+
+	const makeBatches = () => {
+		const sortFn = (a: IFeed, b: IFeed) => {
+			let at = (a.title ?? "").toLowerCase();
+			let bt = (b.title ?? "").toLowerCase();
+			return ((at < bt) ? -100 : 0) + ((at > bt) ? 100 : 0)
+		}
+
+		feedBatches = [];
+
+		let ft = feeds.filter( f => f.feedType == "tw").sort(sortFn);
+
+		if (ft.length) {
+			feedBatches.push({
+				feedType: "Twitter",
+				feeds: ft
+			});
+		}
+
+		let fg = feeds.filter( f => f.feedType == "go").sort(sortFn);
+
+		if (fg.length) {
+			feedBatches.push({
+				feedType: "Go Comics",
+				feeds: fg
+			});
+		}
+	};
+
+	const removeFeedAsync = async (uid: string, ft: string, fid: string) => {
+		alert(`Removing uid=${uid}; ft=${ft} fid=${fid}`);
+
+		// TODO: Remove from db
+		//api/User/RemoveFeed?userid=x&feedType=tw&feedId=123
+		try {
+			await $ax.post(`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`);
+		}
+		catch (error) {
+			console.error(error);
+		}
+
+		feeds = feeds.filter(f => f.feedId != fid);
+		makeBatches();
+	};
+
+	const refresh = async (uid: string) => {
+		userInfo = await getUserInfoAsync(uid);
+		if (!userInfo) {
+			feedBatches = [];
+			return;
+		} 
+
+		await loadFeeds(uid);
+	};
+
+	// ** Reactives **
+
+	$: feedListTitle = (userInfo) ? ((userId == "public-user") ? "PUBLIC FEEDS" : `Feeds for ${userInfo.fullName}`) : "User Missing";
+
+	refresh(userId);
+
+</script>
+
+<h1>{feedListTitle}</h1>
+	
+	{#each feedBatches as fb}
+		<h2>{fb.feedType}</h2>
+		{#each fb.feeds as feed}
+			<div class="feed">
+				<div class="left">
+					<h3>{feed.title} {#if feed.description != feed.title}({feed.description}){/if}</h3>
+					<a href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}" target="_blank" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a>
+					<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
+				</div>
+				<div class="right">
+					{#if isEdit}<a href="/" on:click|preventDefault={() => removeFeedAsync(userId, feed.feedType, feed.feedId)}><i class="fa-solid fa-trash-can"></i></a>{/if}
+				</div>
+			</div>
+		{/each}
+	{/each}
+
+
+
+<style lang="scss">
+	@import "../styles/_custom-variables.scss";
+
+	h1 {
+		display: block;
+		font-size: 1.5rem;
+		color: $dark-text;
+		text-align: center;
+		margin-bottom: 1rem;
+	}
+
+	h2 {
+		display: block;
+		font-size: 1.0rem;
+		color: $body-text;
+		margin: 0.75rem 0 0.5rem;
+		border-bottom: 1px solid $body-text;
+	}
+
+	h3 {
+		display: block;
+		font-weight: bold;
+		font-size: 1.15rem;
+		color: $main-color;
+	}
+
+	.feed {
+		display: flex;
+		align-items: center;
+		margin: 0.5rem 0;
+		line-height: 1.5rem;
+
+		.left {
+			flex: 1 1 auto;
+			padding-right: 0.2rem;
+		}
+
+		.right {
+			flex: 0 1 0;
+		}
+		
+		a {
+			display: block;
+			font-size: 1.0rem;
+			margin: 0 0 0.25rem;
+		}
+
+		i {
+			font-size: 1.5rem;
+			color: $main-color;
+		}
+	}
+
+	@media screen and (max-width: $bp-small) {
+
+	}
+
+</style>

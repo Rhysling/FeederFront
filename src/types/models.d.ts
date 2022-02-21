@@ -1,5 +1,5 @@
 // Using MSBuild ver. 6.0.200 to load projects.
-// Generated - 2022/02/20-14:19:49
+// Generated - 2022/02/21-09:51:59
 
 // SOLUTION: FeederBack
 
@@ -82,6 +82,21 @@ interface IPostItem {
 	pubDateGmt: INullable<string>;
 }
 
+interface IUserInfo {
+	_id: INullable<string>;
+	_rev: INullable<string>;
+	tbl: string;
+	userId: INullable<string>;
+	fullName: INullable<string>;
+	email: INullable<string>;
+	subscriptionKey: INullable<string>;
+	feedIds: Array<string>;
+	isAdmin: boolean;
+	isDisabled: boolean;
+	lastLogin: INullable<string>;
+	feedCounts: Array<IKVP>;
+}
+
 // NAMESPACE: FeederBack.Models
 
 interface IAdminLogSearchVM {
@@ -116,7 +131,7 @@ interface IManageMyFeedsVM {
 }
 
 interface IUserDetailVM {
-	userInfo: any;
+	userInfo: IUserInfo;
 	isMe: boolean;
 	feeds: Array<IFeed>;
 }
