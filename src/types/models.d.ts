@@ -1,261 +1,123 @@
-// Using MSBuild ver. 5.0.301 to load projects.
-// Generated - 2021/06/24-15:06:49
+// Using MSBuild ver. 6.0.200 to load projects.
+// Generated - 2022/02/20-14:19:49
 
-// SOLUTION: Single Project
+// SOLUTION: FeederBack
 
-// PROJECT SEARCHED:
-//	BotanicaStoreBack
+// PROJECTS SEARCHED:
+//	FeederBack
+//	FeederBack.Common
+//	FeederBack.Ops
+//	FeederBack.Db
 
 type INullable<T> = T | null | undefined;
 
-// NAMESPACE: BotanicaStoreBack.Models
+// NAMESPACE: FeederBack.Common.Models
 
-interface ICalendar {
-	itemId: number;
-	beginDate: string;
-	endDate: INullable<string>;
-	eventTime: string;
-	title: string;
-	location: string;
-	description: string;
-	isSpecial: boolean;
-	beginDateFormatted: string;
-	endDateFormatted: string;
+interface IEditPropertyRequest {
+	objectId: INullable<string>;
+	propName: INullable<string>;
+	value: INullable<string>;
 }
 
-interface IKey {
-	keyName: string;
-	keyValue: string;
+interface IEditResponse {
+	isSuccess: boolean;
+	message: string;
 }
 
-interface ILink {
-	linkId: number;
-	title: string;
-	description: string;
-	url: string;
-	sortOrder: number;
-	isDeleted: boolean;
+interface IFeed {
+	_id: string;
+	_rev: INullable<string>;
+	tbl: string;
+	feedType: string;
+	feedId: string;
+	title: INullable<string>;
+	description: INullable<string>;
+	link: INullable<string>;
+	lastBuildDate: string;
+	language: INullable<string>;
+	category: INullable<string>;
+	postItems: Array<IPostItem>;
+	lastSave: string;
+	lastPostKey: string;
+	isUpdating: boolean;
+	isActive: boolean;
+	exists: boolean;
 }
 
-interface IPlant {
-	plantId: number;
-	genus: string;
-	species: string;
-	common: string;
-	description: string;
-	webDescription: string;
-	plantSize: string;
-	plantType: string;
-	plantZone: string;
-	isNwNative: boolean;
-	hasSmallPic: boolean;
-	bigPicIds: string;
-	isListed: boolean;
-	isFeatured: boolean;
-	lastUpdate: string;
-	flag: string;
-	lastUpdateFormatted: string;
-}
-
-interface IPlantPrice {
-	plantId: number;
-	potSizeId: number;
-	price: INullable<number>;
-	isAvailable: boolean;
-}
-
-interface IPotSize {
-	id: number;
-	potDescription: string;
-	potShorthand: string;
-	sortOrder: number;
-}
-
-interface IvwListedPlant {
-	plantId: number;
-	genus: string;
-	species: string;
-	common: string;
-	description: string;
-	plantSize: string;
-	plantType: string;
-	plantZone: string;
-	isNwNative: boolean;
-	hasSmallPic: boolean;
-	bigPicIds: string;
-	isFeatured: boolean;
-	availability: string;
-}
-
-interface IvwPlantPriceMatrix {
-	potSizeId: number;
-	potDescription: string;
-	potShorthand: string;
-	sortOrder: number;
-	plantId: number;
-	price: INullable<number>;
-	isAvailable: boolean;
-}
-
-interface IvwPlantPriceSummary {
-	plantId: number;
-	genus: string;
-	species: string;
-	available: string;
-	notAvailable: string;
-}
-
-interface IvwPlantsAvailable {
-	plantId: number;
-	plantName: string;
-	potSizeId: number;
-	potDescription: string;
-	potShorthand: string;
-	sortOrder: number;
-	price: number;
-	qtyEntered: string;
-	isValid: INullable<boolean>;
-}
-
-interface IvwShoppingListItem {
-	wlId: number;
-	plantId: number;
-	plantName: string;
-	potSizeId: number;
-	potDescription: string;
-	sortOrder: number;
-	qty: number;
-	price: number;
-	currentPrice: INullable<number>;
-	isCurrentlyAvailable: INullable<boolean>;
-}
-
-interface IvwShoppingListSummary {
-	wlId: number;
-	userId: number;
-	createdDate: string;
-	lastUpdateDate: string;
-	emailedDate: INullable<string>;
-	isClosed: boolean;
-	userFullName: string;
-	email: string;
-	totalCount: number;
-	totalPretax: number;
-	createdDateFormatted: string;
-	lastUpdateDateFormatted: string;
-	emailedDateFormatted: string;
-}
-
-interface IvwUserDetail {
-	userId: number;
-	email: string;
-	fullName: string;
-	isAdmin: boolean;
-	createdDate: string;
-	lastLoginDate: string;
-	loginCount: number;
-	countAll: number;
-	countPending: number;
-	countClosed: number;
-	createdDateFormatted: string;
-	lastLoginDateFormatted: string;
-}
-
-interface IvwWishListEmail {
-	wlId: number;
-	userId: number;
-	createdDate: string;
-	lastUpdateDate: string;
-	emailedDate: INullable<string>;
-	isClosed: boolean;
-	email: string;
-	fullName: string;
-	items: Array<IvwWishListEmailItem>;
-}
-
-interface IvwWishListEmailItem {
-	wlId: number;
-	plantId: number;
-	plantName: string;
-	potSizeId: number;
-	potDescription: string;
-	price: number;
-	qty: number;
-}
-
-interface IvwWishListFlat {
-	userId: number;
-	createdDate: string;
-	lastUpdateDate: string;
-	emailedDate: INullable<string>;
-	isClosed: boolean;
-	wlId: number;
-	plantId: number;
-	plantName: string;
-	potSizeId: number;
-	potDescription: string;
-	sortOrder: number;
-	price: number;
-	qty: number;
-	currentPrice: INullable<number>;
-	isCurrentlyAvailable: INullable<boolean>;
-	isEditMode: boolean;
-}
-
-interface IWishList {
-	wlId: number;
-	userId: number;
-	createdDate: string;
-	lastUpdateDate: string;
-	emailedDate: INullable<string>;
-	isClosed: boolean;
-	createdDateFormatted: string;
-	lastUpdateDateFormatted: string;
-	emailedDateFormatted: string;
-}
-
-interface IWishListItem {
-	wlId: number;
-	plantId: number;
-	potSizeId: number;
-	price: number;
-	qty: number;
-}
-
-// NAMESPACE: BotanicaStoreBack.Models.Core
-
-interface INameValueItem {
-	name: string;
+interface IKVP {
+	key: string;
 	value: string;
+	sortSeq: number;
 }
 
-interface IPlantIdName {
-	plantId: number;
-	plantName: string;
+interface ILogItemOut {
+	_id: string;
+	_rev: INullable<string>;
+	tbl: string;
+	eventTimestamp: INullable<string>;
+	eventDateGmt: INullable<string>;
+	levelName: INullable<string>;
+	levelId: number;
+	appName: INullable<string>;
+	message: INullable<string>;
+	isException: boolean;
+	infoObj: any;
+	eventDatePT: string;
+	eventDateGmtShort: string;
+	infoObjDisplay: string;
 }
 
-interface IPlantPicId {
-	plantId: number;
-	picId: string;
+interface IPostItem {
+	_id: string;
+	_rev: INullable<string>;
+	tbl: string;
+	feedType: string;
+	feedId: string;
+	postKey: string;
+	postUnixDate: number;
+	title: INullable<string>;
+	description: INullable<string>;
+	link: INullable<string>;
+	guid: INullable<string>;
+	pubDateGmt: INullable<string>;
 }
 
-interface IPlantToggle {
-	plantId: number;
-	val: boolean;
+// NAMESPACE: FeederBack.Models
+
+interface IAdminLogSearchVM {
+	asOfDate: string;
+	takeCount: number;
+	isAllForDate: boolean;
 }
 
-interface IUserClient {
-	userId: number;
-	email: string;
-	fullName: string;
-	token: string;
+interface IAdminLogVM {
+	searchCriteria: INullable<IAdminLogSearchVM>;
+	logItems: INullable<Array<ILogItemOut>>;
+}
+
+interface ILookupFeedVM {
+	feedTypeSL: Array<IKVP>;
+	feedType: string;
+	screenName: string;
+	resultMessage: string;
+	newFeed: IFeed;
+	hasNewFeed: boolean;
+	isReset: boolean;
+}
+
+interface IManageMyFeedsVM {
+	userSL: Array<IKVP>;
+	userId: string;
+	userDetail: IUserDetailVM;
+	lookupFeed: ILookupFeedVM;
+	urlRoot: string;
+	myId: string;
 	isAdmin: boolean;
-	taxRate: number;
 }
 
-interface IUserLogin {
-	email: string;
-	fullName: string;
-	pw: string;
+interface IUserDetailVM {
+	userInfo: any;
+	isMe: boolean;
+	feeds: Array<IFeed>;
 }
 

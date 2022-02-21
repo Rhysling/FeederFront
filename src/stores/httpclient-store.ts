@@ -27,3 +27,5 @@ export const httpClient = derived(
     return instance;
   }
 );
+
+export const getBaseURL = () => baseURL;

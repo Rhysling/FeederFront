@@ -3,51 +3,51 @@
   import { onMount } from 'svelte';
 
   import { user } from "../stores/user-store";
+  import { httpClient as ax } from "../stores/httpclient-store";
+  import type { AxiosResponse } from "axios";
   import { currentSlug, navTo } from "../stores/route-store.js";
 
   let showAdmin = false;
 
   
 	onMount(async () => {
-		console.log("The component has mounted.");
-
-    await user.initAuth0Async();
+		await user.initAuth0Async();
 
     if ($user.isAuthenticated) {
-      console.log("Mount: User is authenticated.");
       window.history.replaceState({}, document.title, window.location.pathname);
 
       return;
     }
 
-    console.log("Mount: User not authenticated.");
-
     const query = window.location.search;
     const shouldParseResult = query.includes("code=") && query.includes("state=");
 
     if (shouldParseResult) {
-      console.log("Mount: Parsing redirect.");
-
       try {
-        const result = await user.handleRedirectCallbackAsync();
-
-        console.log({redirectResult: result})
+        await user.handleRedirectCallbackAsync();
 
         let isAuth = await user.getIsAuthenticatedAsync();
 
         if (isAuth) {
-          console.log("Logged in on redirect!");
           await user.getIdTokenClaimsAsync();
           await user.getAuthTokenAsync();
+          try {
+            const response: AxiosResponse<string> = await $ax.post("/api/User/Login", $user);
+            if (response.data)
+              console.error(response.data);
+          } catch (error) {
+            console.error(error);
+          }
+
         }
         else {
-          console.log("FAILED login on redirect!");
+          console.error("FAILED login on redirect!");
         }
 
-        console.log({user: $user});
+        $user.isAuthenticated = isAuth;
 
       } catch (err) {
-        console.log("Error parsing redirect:", err);
+        console.error("Error parsing redirect:", err);
       }
 
       window.history.replaceState({}, document.title, "/");

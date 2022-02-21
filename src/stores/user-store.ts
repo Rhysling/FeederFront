@@ -65,10 +65,10 @@ const loginAsync = async (targetUrl: string | null | undefined) => {
     if (auth0)
       await auth0.loginWithRedirect(options);
 
-    u.update(a => {
-      a.isAuthenticated = true;
-      return a;
-    });
+    // u.update(a => {
+    //   a.isAuthenticated = true;
+    //   return a;
+    // });
 
   } catch (err) {
     console.log("Login failed", err);

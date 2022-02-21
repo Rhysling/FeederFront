@@ -1,11 +1,21 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
 	import Container from "../components/Container.svelte";
 
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
-  // import { navTo } from "../stores/route-store.js";
+  import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
+  import "../js/copy-to-clipboard";
   // import { isLoggedIn } from "../stores/user-store.js";
   
+	interface IFeedBatch {
+		feedType: string;
+		feeds: IFeed[];
+	}
+
+	let feedBatches: IFeedBatch[] = [];
+	let burl = getBaseURL();
+
+	// *** Begin Testing ***
 	let unsecuredVal = "Empty";
 	let securedVal = "Empty";
 	let adminVal = "Empty";
@@ -13,39 +23,67 @@
 	const getUnsecured = () => {
 		$ax.get("/api/Test/GetUnsecuredValue")
 			.then((response: AxiosResponse<string>) => unsecuredVal = response.data)
-			.catch((err) => console.log({getUnsecuredErr: err}));
+			.catch((err) => console.error({getUnsecuredErr: err}));
 	};
 
 	const getSecured = () => {
 		$ax.get("/api/Test/GetSecuredValue")
 			.then((response: AxiosResponse<string>) => securedVal = response.data)
-			.catch((err) => console.log({getSecuredErr: err}));
+			.catch((err) => console.error({getSecuredErr: err}));
 	};
 
 	const getAdmin = () => {
 		$ax.get("/api/Test/GetAdminValue")
 			.then((response: AxiosResponse<string>) => adminVal = response.data)
-			.catch((err) => console.log({getAdminErr: err}));
+			.catch((err) => console.error({getAdminErr: err}));
 	};
+// *** End Testing ***
 
-
-
-
-	// let goToShoppingList = (e: MouseEvent) => {
-	// 	e.preventDefault();
-	// 	if ($isLoggedIn)
-	// 		navTo(e, "/shopping-list");
-	// 	else
-	// 		() => {} //no-op
+	// const getPublicFeeds = () => {
+	// 	$ax.get("/api/User/GetFeedsForUser/public-user")
+	// 		.then((response: AxiosResponse<IFeed[]>) => {
+	// 			feeds = response.data;
+	// 			console.log({feeds});
+	// 			})
+	// 		.catch((err) => console.error({getPublicFeeds: err}));
 	// };
 
-  // async function getWeather() {
-	// 	gettingWx = true;
-	// 	const res = await fetch("https://localhost:44370/WeatherForecast");
-	// 	wx = await res.json();
-	// 	console.log(wx);
-	// 	gettingWx = false;
-  // }
+	const getPublicFeedsAsync = async () => {
+		try {
+			const response: AxiosResponse<IFeed[]> = await $ax.get("/api/User/GetFeedsForUser/public-user");
+			return response.data;
+		}
+		catch (error) {
+			console.error(error);
+		}
+	};
+
+	onMount(async () => {
+		let feeds = await getPublicFeedsAsync();
+		if (!feeds) return;
+
+		feedBatches = [];
+
+		feedBatches.push({
+			feedType: "Twitter",
+			feeds: feeds.filter( f => f.feedType == "tw").sort((a, b) => {
+				let at = (a.title ?? "").toLowerCase();
+				let bt = (b.title ?? "").toLowerCase();
+				return ((at < bt) ? -100 : 0) + ((at > bt) ? 100 : 0)
+			})
+		});
+
+		feedBatches.push({
+			feedType: "Go Comics",
+			feeds: feeds.filter( f => f.feedType == "go").sort((a, b) => {
+				let at = (a.title ?? "").toLowerCase();
+				let bt = (b.title ?? "").toLowerCase();
+				return ((at < bt) ? -100 : 0) + ((at > bt) ? 100 : 0)
+			})
+		});
+
+	});
+
 </script>
 
 <div class="splash-container">
@@ -73,24 +111,20 @@
 	<div>Unsecured value: { adminVal }</div>
 	<button on:click|preventDefault={ getAdmin }>Get Admin</button>
 	{/if}
-	<ul>
-		<li>Begin</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam culpa non earum porro delectus doloribus nam et veniam ut tempora.</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-		<li>Stuff here</li>
-	</ul>
+	
+	<h2>PUBLIC FEEDS</h2>
+	
+	{#each feedBatches as fb}
+		<h3>{fb.feedType}</h3>
+		{#each fb.feeds as feed}
+			<div class="feed">
+				<h4>{feed.title} {#if feed.description != feed.title}({feed.description}){/if}</h4>
+				<a href="{burl}/api/feeds/public/{feed.feedType}/{feed.feedId}" target="_blank" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/public/{feed.feedType}/{feed.feedId}</a>
+				<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
+			</div>
+		{/each}
+	{/each}
+
 </Container>
 
 <style lang="scss">
@@ -133,6 +167,38 @@
 		text-align: center;
 		margin-top: 1rem;
 		text-transform: uppercase;
+	}
+
+	h2 {
+		text-align: center;
+		font-size: 1.5rem;
+		color: $dark-text;
+	}
+
+	h3 {
+		display: block;
+		font-size: 1.0rem;
+		color: $body-text;
+		margin: 0.75rem 0 0.5rem;
+		border-bottom: 1px solid $body-text;
+	}
+
+	.feed {
+		margin: 0.5rem 0;
+		line-height: 1.5rem;
+
+		h4 {
+			display: block;
+			font-weight: bold;
+			font-size: 1.15rem;
+			color: $main-color;
+		}
+
+		a {
+			display: block;
+			font-size: 1.0rem;
+			margin: 0 0 0.25rem;
+		}
 	}
 
 	@media screen and (max-width: $bp-small) {

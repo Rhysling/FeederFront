@@ -82,7 +82,6 @@ a {
 input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
-	-webkit-padding: 0.4em 0;
 	padding: 0.4em;
 	margin: 0 0 0.5em 0;
 	box-sizing: border-box;
@@ -95,7 +94,7 @@ input:disabled {
 }
 
 @import "_buttons.scss";
-
+@import "_copy-to-clipboard.scss";
 
 @media (max-width: $bp-small) {
 

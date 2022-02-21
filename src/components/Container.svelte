@@ -18,7 +18,7 @@
 		justify-content: center;
 		width: 100%;
 		margin-top: 4rem;
-		background-color: pink;
+		background-color: $body-background;
 		border-top: 2px solid $dark-background;
 
 			@media screen and (max-width: $bp-small) {
