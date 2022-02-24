@@ -2,13 +2,14 @@ import createAuth0Client, { Auth0Client, type IdToken } from '@auth0/auth0-spa-j
 import { getSettings } from './settings';
 import { writable } from 'svelte/store';
 
-interface IUserInfo {
+interface IUserAuth0 {
   isAuthenticated: boolean;
   idTokenClaims: IdToken | undefined;
   authToken: string;
   fullName: string;
   email: string;
   userId: string;
+  subscriptionKey: string;
   isAdmin: boolean;
   isDisabled: boolean;
 }
@@ -26,12 +27,13 @@ const getEmptyU = () => {
     fullName: "",
     email: "",
     userId: "",
+    subscriptionKey: "",
     isAdmin: false,
     isDisabled: false
   }
 };
 
-const u = writable<IUserInfo>(getEmptyU());
+const u = writable<IUserAuth0>(getEmptyU());
 
 /**
  * Initializes the Auth0 client

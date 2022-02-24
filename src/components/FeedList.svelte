@@ -11,6 +11,7 @@
 
 	export let userId = "public-user";
 	export let isEdit = false;
+	export let feedToAdd: IFeed | null | undefined = null;
 
 	let feeds: IFeed[] = [];
 	let feedBatches: IFeedBatch[] = [];
@@ -74,11 +75,30 @@
 		}
 	};
 
-	const removeFeedAsync = async (uid: string, ft: string, fid: string) => {
-		alert(`Removing uid=${uid}; ft=${ft} fid=${fid}`);
+	const addFeedAsync = async (newFeed: IFeed | null | undefined) => {
+		if (!newFeed?._id) return;
 
-		// TODO: Remove from db
-		//api/User/RemoveFeed?userid=x&feedType=tw&feedId=123
+		try {
+			await $ax.post(`/api/User/AddFeed?userid=${userId}`, newFeed);
+		}
+		catch (error) {
+			console.error(error);
+		}
+
+		let f = feeds.find(a => a._id == newFeed._id);
+		if (!f) {
+			feeds.push(newFeed);
+			makeBatches();
+		}
+	};
+
+	const removeFeedAsync = async (uid: string, ft: string, fid: string) => {
+		let f = feeds.find(a => a.feedType == ft && a.feedId == fid);
+		if (f) {
+			let ok = confirm(`Remove feed: ${f.title}?`);
+			if (!ok) return;
+		}
+
 		try {
 			await $ax.post(`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`);
 		}
@@ -102,7 +122,8 @@
 
 	// ** Reactives **
 
-	$: feedListTitle = (userInfo) ? ((userId == "public-user") ? "PUBLIC FEEDS" : `Feeds for ${userInfo.fullName}`) : "User Missing";
+	$: feedListTitle = (userInfo) ? ((userId == "public-user") ? "PUBLIC FEEDS" : `Feeds for ${userInfo.fullName}`) : "";
+	$: addFeedAsync(feedToAdd);
 
 	refresh(userId);
 
@@ -120,7 +141,7 @@
 					<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
 				</div>
 				<div class="right">
-					{#if isEdit}<a href="/" on:click|preventDefault={() => removeFeedAsync(userId, feed.feedType, feed.feedId)}><i class="fa-solid fa-trash-can"></i></a>{/if}
+					{#if isEdit}<a href="/" on:click|preventDefault={() => removeFeedAsync(userId, feed.feedType, feed.feedId)} title="Remove feed"><i class="fa-solid fa-trash-can"></i></a>{/if}
 				</div>
 			</div>
 		{/each}

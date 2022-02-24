@@ -32,10 +32,19 @@
           await user.getIdTokenClaimsAsync();
           await user.getAuthTokenAsync();
           try {
-            const response: AxiosResponse<string> = await $ax.post("/api/User/Login", $user);
-            if (response.data)
-              console.error(response.data);
-          } catch (error) {
+            const response: AxiosResponse<IUserInfo> = await $ax.post("/api/User/Login", $user);
+            let ui = response.data;
+
+            if (ui.isDisabled) {
+              // Log this guy back out.
+              alert("This account is disabled.");
+              user.logout();
+              return;
+            }
+            
+            $user.subscriptionKey = ui.subscriptionKey ?? "";
+          }
+          catch (error) {
             console.error(error);
           }
 
@@ -116,6 +125,7 @@
     position: fixed;
     top: 0;
 		left: 0;
+    z-index: 4;
   }
   .ap-menu-main, .ap-menu-admin {
     display: flex;

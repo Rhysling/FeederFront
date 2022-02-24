@@ -24,17 +24,30 @@ button {
 	}
 
 	&:not(:disabled):focus {
-			border: 2px solid $dark-text;
+			outline: 2px solid $dark-text;
 	}
 
-	&:disabled {
+	&:disabled,
+	&.narrow:disabled {
 		color: $gray-light;
 		background-color: $gray-lighter;
+		outline: 1px solid lighten($dark-background, 10%);
 		cursor: default;
 	}
 
 	&.primary {
 		font-size: 120%;
+	}
+
+	&.secondary {
+		color: $body-background;
+		background-color: lighten($main-color, 15%);
+		outline: 1px solid lighten($dark-background, 10%);
+	}
+
+	&.narrow {
+		font-size: 90%;
+		padding: 0.25em 2em;
 	}
 
 	&.small {
