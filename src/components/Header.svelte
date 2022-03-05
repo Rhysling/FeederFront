@@ -95,7 +95,7 @@
           href="/account"
           on:click={(e) => navTo(e, "/account")}
           class:selected={("/account" === $currentSlug) ? true : undefined}>Account</a>
-        {#if $user.isAdmin}<a href="/" on:click|preventDefault={ () => showAdmin = !showAdmin }>Admin</a>{/if}
+        {#if $user.isAdmin}<a href="/" on:click|preventDefault={ () => {showAdmin = !showAdmin; navTo(null, "/admin-users") }}>Admin</a>{/if}
         <a href="/" on:click|preventDefault={ () => user.logout() }>Sign Out</a>
       {:else}
         <a href="/" on:click|preventDefault={ async () => await user.loginAsync(null) }>Sign In/Sign Up</a>

@@ -125,7 +125,7 @@
 	$: feedListTitle = (userInfo) ? ((userId == "public-user") ? "PUBLIC FEEDS" : `Feeds for ${userInfo.fullName}`) : "";
 	$: addFeedAsync(feedToAdd);
 
-	refresh(userId);
+	$: refresh(userId);
 
 </script>
 
