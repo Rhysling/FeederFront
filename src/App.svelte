@@ -8,6 +8,8 @@
 	import Home from "./pages/Home.svelte";
 	import MyFeeds from "./pages/MyFeeds.svelte";
 	import Account from "./pages/Account.svelte";
+	import AdminUserFeeds from "./pages/AdminUserFeeds.svelte";	
+	import AdminFeeds from "./pages/AdminFeeds.svelte";
 	import AdminUsers from "./pages/AdminUsers.svelte";
 	import AdminLog from "./pages/AdminLog.svelte";
 
@@ -27,6 +29,8 @@
 		Home,
 		MyFeeds,
 		Account,
+		AdminUserFeeds,
+		AdminFeeds,
 		AdminUsers,
 		AdminLog
 	};

@@ -1,5 +1,5 @@
 // Using MSBuild ver. 6.0.200 to load projects.
-// Generated - 2022/02/21-09:51:59
+// Generated - 2022/03/07-08:04:23
 
 // SOLUTION: FeederBack
 
@@ -22,26 +22,6 @@ interface IEditPropertyRequest {
 interface IEditResponse {
 	isSuccess: boolean;
 	message: string;
-}
-
-interface IFeed {
-	_id: string;
-	_rev: INullable<string>;
-	tbl: string;
-	feedType: string;
-	feedId: string;
-	title: INullable<string>;
-	description: INullable<string>;
-	link: INullable<string>;
-	lastBuildDate: string;
-	language: INullable<string>;
-	category: INullable<string>;
-	postItems: Array<IPostItem>;
-	lastSave: string;
-	lastPostKey: string;
-	isUpdating: boolean;
-	isActive: boolean;
-	exists: boolean;
 }
 
 interface IKVP {
@@ -110,29 +90,32 @@ interface IAdminLogVM {
 	logItems: INullable<Array<ILogItemOut>>;
 }
 
-interface ILookupFeedVM {
-	feedTypeSL: Array<IKVP>;
+// NAMESPACE: No namespace found
+
+interface IFeed {
+	_id: string;
+	_rev: INullable<string>;
+	tbl: string;
 	feedType: string;
-	screenName: string;
-	resultMessage: string;
-	newFeed: IFeed;
-	hasNewFeed: boolean;
-	isReset: boolean;
+	feedId: string;
+	title: INullable<string>;
+	description: INullable<string>;
+	link: INullable<string>;
+	lastBuildDate: string;
+	language: INullable<string>;
+	category: INullable<string>;
+	postItems: Array<IPostItem>;
+	lastSave: string;
+	lastPostKey: string;
+	isUpdating: boolean;
+	isActive: boolean;
+	exists: boolean;
 }
 
-interface IManageMyFeedsVM {
-	userSL: Array<IKVP>;
-	userId: string;
-	userDetail: IUserDetailVM;
-	lookupFeed: ILookupFeedVM;
-	urlRoot: string;
-	myId: string;
-	isAdmin: boolean;
-}
-
-interface IUserDetailVM {
-	userInfo: IUserInfo;
-	isMe: boolean;
+interface IUsersFeedsVM {
 	feeds: Array<IFeed>;
+	users: Array<IUserInfo>;
+	userFeedCounts: Array<IKVP>;
+	postCounts: Array<IKVP>;
 }
 

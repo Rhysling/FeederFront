@@ -23,6 +23,7 @@
   footer {
     line-height: 1.2em;
     padding: 0.5rem 0;
+    color: $gray-lighter;
     background-color: $dark-background;
     text-align: center;
     vertical-align: middle;

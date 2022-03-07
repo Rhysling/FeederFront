@@ -106,13 +106,21 @@
       <a href="/" on:click={(e) => {e.preventDefault(); showAdmin = !showAdmin; }}>&lt; Back</a>
       <div class="ap-menu-sep">&nbsp;</div>
       <a
-          href="/admin-users"
-          on:click={(e) => navTo(e, "/admin-users")}
-          class:selected={("/admin-users" === $currentSlug) ? true : undefined}>Users</a>
-        <a
-          href="/admin-log"
-          on:click={(e) => navTo(e, "/admin-log")}
-          class:selected={("/admin-log" === $currentSlug) ? true : undefined}>Log</a>
+        href="/admin-user-feeds"
+        on:click={(e) => navTo(e, "/admin-user-feeds")}
+        class:selected={("/admin-user-feeds" === $currentSlug) ? true : undefined}>UserFeeds</a>
+      <a
+        href="/admin-feeds"
+        on:click={(e) => navTo(e, "/admin-feeds")}
+        class:selected={("/admin-feeds" === $currentSlug) ? true : undefined}>Feeds</a>
+      <a
+        href="/admin-users"
+        on:click={(e) => navTo(e, "/admin-users")}
+        class:selected={("/admin-users" === $currentSlug) ? true : undefined}>Users</a>
+      <a
+        href="/admin-log"
+        on:click={(e) => navTo(e, "/admin-log")}
+        class:selected={("/admin-log" === $currentSlug) ? true : undefined}>Log</a>
     </div>
   {/if}
 </div>

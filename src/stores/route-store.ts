@@ -28,6 +28,20 @@ let getBaseRoutes = (): Route => {
 				isExpanded: undefined,
 				children: [
 					{
+						title: "User Feeds Admin",
+						navName: "UserFeeds",
+						page: "AdminUserFeeds",
+						slug: "/admin-user-feeds",
+						isAdmin: true
+					},
+					{
+						title: "Feeds Admin",
+						navName: "Feeds",
+						page: "AdminFeeds",
+						slug: "/admin-feeds",
+						isAdmin: true
+					},
+					{
 						title: "User Admin",
 						navName: "Users",
 						page: "AdminUsers",
