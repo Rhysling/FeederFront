@@ -3,6 +3,7 @@
 /public-busted/
 
 tools/
+secrets/
 buildlog.txt
 
 /.vscode/

@@ -33,6 +33,12 @@
     return ufc ? ufc.value : "none";
   }
 
+  const feedState = (f: IFeed) => {
+    if (!f.isActive) return "error";
+    if (userCountForFeed(f._id) == "none") return "warning"
+    return "success";
+  };
+
   getUsersFeeds();
 
 </script>
@@ -42,8 +48,9 @@
   
   {#if ufvm?.feeds}
   {#each ufvm.feeds as f}
+    {@const state = feedState(f)}
     <div class="feed">
-      <div class="feed-title">
+      <div class="feed-title" class:success={state == "success"} class:warning={state == "warning"} class:error={state == "error"}>
         {f.title}
       </div>
       <div class="feed-info">
@@ -78,6 +85,18 @@
 
   .feed-title {
     color: $dark-text;
+
+    &.success {
+      background-color: $color-success-bg;
+    }
+
+    &.warning {
+      background-color: $color-warning-bg;
+    }
+
+    &.error {
+      background-color: $color-error-bg;
+    }
   }
 
   .feed-info {

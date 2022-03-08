@@ -5,6 +5,7 @@ $secondary-color: rgb(66, 184, 221); /* this is a light blue */
 $body-text:       #555555; //#7f8c8d;
 $body-background: #ffffff;
 $dark-text:       #333333;
+$light-text:      #aaaaaa;
 $dark-background: #2d3e50;
 $disabled-text:   #999999;
 
@@ -13,7 +14,7 @@ $color-success-bg: lighten($color-success, 50%);
 $color-error:      rgb(202, 60, 60); /* this is a maroon */
 $color-error-bg:   rgb(255, 212, 209);
 $color-warning:    rgb(223, 117, 20); /* this is an orange */
-
+$color-warning-bg: lighten($color-warning, 30%);
 
 $gray-light:       $body-text;
 $gray-lighter:     lighten($dark-text, 70%); 

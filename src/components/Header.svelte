@@ -190,6 +190,7 @@
   .ap-menu-text {
     top: 2px;
     font-size: 90%;
+    color: $light-text;
   }
 
 
