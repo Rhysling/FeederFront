@@ -58,7 +58,7 @@ const u = writable<IUserAuth0>(getEmptyU());
  */
 const loginAsync = async (targetUrl: string | null | undefined) => {
   try {
-    console.log("Logging in", targetUrl);
+    //console.log("Logging in", targetUrl);
 
     const options = {
       redirect_uri: window.location.origin,
@@ -73,7 +73,7 @@ const loginAsync = async (targetUrl: string | null | undefined) => {
     // });
 
   } catch (err) {
-    console.log("Login failed", err);
+    console.error("Login failed", err);
     u.set(getEmptyU());
   }
 };
@@ -83,7 +83,7 @@ const loginAsync = async (targetUrl: string | null | undefined) => {
  */
 const logout = () => {
   try {
-    console.log("Logging out");
+    //console.log("Logging out");
     u.set(getEmptyU());
 	
     if (auth0) {
@@ -93,7 +93,7 @@ const logout = () => {
     }
       
   } catch (err) {
-    console.log("Logout failed", err);
+    console.error("Logout failed", err);
   }
 };
 

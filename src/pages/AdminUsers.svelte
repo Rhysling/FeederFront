@@ -10,8 +10,6 @@
 		try {
 			const response: AxiosResponse<IUsersFeedsVM> = await $ax.get("/api/Stats/UsersFeeds");
 			ufvm = response.data;
-      // console.log({ufvm});
-      // console.log($user);
 		}
 		catch (error) {
 			console.error(error);
@@ -39,7 +37,6 @@
       }
     }
 
-    //alert(`${uid} is ${isDisabled ? "Disabled" : "Enabled"}`);
   };
 
   getUsersFeeds();

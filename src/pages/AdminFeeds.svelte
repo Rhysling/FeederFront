@@ -10,7 +10,6 @@
 		try {
 			const response: AxiosResponse<IUsersFeedsVM> = await $ax.get("/api/Stats/UsersFeeds");
 			ufvm = response.data;
-      //console.log({ufvm});
 		}
 		catch (error) {
 			console.error(error);
@@ -33,9 +32,9 @@
     return ufc ? ufc.value : "none";
   }
 
-  const feedState = (f: IFeed) => {
+  const feedState = (f: IFeed, ufc: string) => {
     if (!f.isActive) return "error";
-    if (userCountForFeed(f._id) == "none") return "warning"
+    if (ufc == "none") return "warning"
     return "success";
   };
 
@@ -48,7 +47,8 @@
   
   {#if ufvm?.feeds}
   {#each ufvm.feeds as f}
-    {@const state = feedState(f)}
+    {@const ufc = userCountForFeed(f._id)}
+    {@const state = feedState(f, ufc)}
     <div class="feed">
       <div class="feed-title" class:success={state == "success"} class:warning={state == "warning"} class:error={state == "error"}>
         {f.title}
@@ -57,7 +57,7 @@
         {f._id} &#9679; Built: {f.lastBuildDate.substring(0, 19)}
       </div>
       <div class="feed-info">
-        Posts: {postCountForFeed(f._id)} &#9679; Users: {userCountForFeed(f._id)}
+        Posts: {postCountForFeed(f._id)} &#9679; Users: {ufc}
       </div>
       <div class="post-info">
         {ellipsis(f.postItems[0].title, 30)} &#9679; {f.postItems[0].pubDateGmt?.substring(0, 22)}{f.postItems[0].pubDateGmt?.substring(25)}

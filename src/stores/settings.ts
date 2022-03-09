@@ -5,8 +5,8 @@ const dev = {
 };
 
 const prod = {
-  "domain": "TO_COME.auth0.com",
-  "client_id": "TO_COME",
+  "domain": "twitfeeder.auth0.com",
+  "client_id": "bXUMTUh1yyvDB7OpFwznJxX95Nso9SpY",
   "audience": "https://feederapi"
 };
 

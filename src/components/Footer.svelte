@@ -1,4 +1,5 @@
 <script>
+  import { navTo } from "../stores/route-store.js";
 
   let yr = new Date().getFullYear() - 2000;
 
@@ -13,7 +14,9 @@
 </script>
 
 <footer>
-  <a href="/" on:click|preventDefault={scrollToTop}>Top</a> | &copy;2001-{yr} TwitFeeder
+  <a href="/" on:click|preventDefault={() => scrollToTop()}>Top</a> | &copy;2001-{yr} TwitFeeder | 
+  <a href="/" on:click|preventDefault={(e) => navTo(e, "/terms-of-service")}>Terms of Service</a> &#9679;
+  <a href="/" on:click|preventDefault={(e) => navTo(e, "/privacy-policy")}>Privacy Policy</a>
 </footer>
 
 

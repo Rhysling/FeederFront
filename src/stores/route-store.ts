@@ -21,6 +21,18 @@ let getBaseRoutes = (): Route => {
 				children: []
 			},
 			{
+				title: "Privacy Policy",
+				page: "PrivacyPolicy",
+				slug: "/privacy-policy",
+				children: []
+			},
+			{
+				title: "Terms of Service",
+				page: "TermsOfService",
+				slug: "/terms-of-service",
+				children: []
+			},
+			{
 				title: "Admin",
 				page: "Admin",
 				slug: "/admin",

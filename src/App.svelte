@@ -12,6 +12,8 @@
 	import AdminFeeds from "./pages/AdminFeeds.svelte";
 	import AdminUsers from "./pages/AdminUsers.svelte";
 	import AdminLog from "./pages/AdminLog.svelte";
+	import PrivacyPolicy from "./pages/PrivacyPolicy.svelte";
+	import TermsOfService from "./pages/TermsOfService.svelte";
 
 	import { currentRoute, navFromUrl } from "./stores/route-store.js";
 	//import { user } from "./stores/user-store.js";
@@ -32,13 +34,14 @@
 		AdminUserFeeds,
 		AdminFeeds,
 		AdminUsers,
-		AdminLog
+		AdminLog,
+		PrivacyPolicy,
+		TermsOfService
 	};
 
 	$: {
 		slug = $currentRoute.slug ?? "/";
 		page = $currentRoute?.page ?? "Home";
-		//console.log({currentRoute: $currentRoute});
 
 		window.scroll({
 			top: 0,

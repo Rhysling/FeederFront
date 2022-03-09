@@ -126,7 +126,6 @@
 		if (lookupFeed) {
 			result = "Found: " + lookupFeed.title;
 			state = "found";
-			console.log({lookupFeed});
 		}
 		else {
 			result = "Not Found: " + screenName;
