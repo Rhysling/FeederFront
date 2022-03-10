@@ -44,7 +44,7 @@
 </script>
 
 <Container>
-	<h1>Admin Users</h1>
+	<h1>User Administration</h1>
   
   {#if ufvm?.users}
   {#each ufvm.users as u}

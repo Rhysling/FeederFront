@@ -7,14 +7,33 @@
 	import flatpickr from "flatpickr";
 	import type { Instance } from 'flatpickr/dist/types/instance';
 
+	let logItems: ILogItemOut[] = [];
+
 	let fp: Instance;
 	let now = new Date();
 	let utcNow = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+
+	const levels = [
+		{ id: 1, text: "Info" },
+		{ id: 2, text: "Warn" },
+		{ id: 3, text: "Error" }
+	];
+	let selectedLevel = 1;
+
+	const takeList = [
+		{ id: 50, text: "50" },
+		{ id: 100, text: "100" },
+		{ id: 200, text: "200" },
+		{ id: 999, text: "ForDate" }
+	];
+	let selectedTake = 50;
+
   
-	const runStats = async () => {
+	const getLogItems = async () => {
 		try {
-			const response: AxiosResponse<string> = await $ax.get("/api/Stats/UsersFeeds");
-			let s = response.data;
+			const response: AxiosResponse<ILogItemOut[]> = await $ax.get(`/api/Log/GetItems?asOfDate=${fp.selectedDates[0].toJSON()}&takeCount=${selectedTake}`);
+			logItems = response.data;
+			console.log({logItems});
 		}
 		catch (error) {
 			console.error(error);
@@ -40,21 +59,38 @@
 		Now: {now.toUTCString()}
 	</div>
 	<div class="bar">
-		<div>As of:</div>
-		<input id="fp" type="text" placeholder="Select Date.." readonly />
-		<div>&#9679; Take:</div>
+		<div>As of:
+			<input id="fp" type="text" placeholder="Select Date.." readonly />
+		</div>
+		<div>&#9679;</div>
 		<div>
-			<select style="width:3.5rem;">
-				<option value="50" selected>50</option>
-				<option value="100">100</option>
-				<option value="200">200</option>
-				<option value="500">500</option>
+			Take:
+			<select bind:value={selectedTake} style="width:5rem;">
+				{#each takeList as take}
+				<option value={take.id} selected={(take.id == selectedTake) ? true : undefined}>{take.text}</option>
+				{/each}
 			</select>
 		</div>
-		<div>| All for date:</div>
-		<input type="checkbox" style="position:relative;top:0.2rem;" />
+		<div>
+			<select bind:value={selectedLevel} style="width:4rem;">
+				{#each levels as level}
+				<option value={level.id} selected={(level.id == selectedLevel) ? true : undefined}>{level.text}</option>
+				{/each}
+			</select>
+		</div>
 		<div>&#9679;</div>
-		<button on:click={() => console.log({fpDates: fp.selectedDates})}>Search</button>
+		<button on:click={() => getLogItems()}>Search</button>
+	</div>
+
+	<div class="log">
+		<div class="head">Time</div>
+		<div class="head">Level</div>
+		<div class="head">Message</div>
+		{#each logItems as item}
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.eventDatePT}</div>
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.levelName}</div>
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.message}</div>
+		{/each}
 	</div>
 </Container>
 
@@ -87,6 +123,37 @@
 
 		input[type="text"] {
 			width: 8.5rem;
+		}
+	}
+
+	.log {
+		display: grid;
+		grid-template-columns: 20fr 8fr 60fr;
+		font-size: 0.8rem;
+		margin-top: 1rem;
+		border: 1px solid $dark-text;
+
+		> div {
+			line-height: 1.1;
+			padding: 0.1rem;
+			border-bottom: 1px solid $gray-lighter;
+		}
+
+		.head {
+			font-size: 0.8rem;
+			font-weight: bold;
+			color: $main-color;
+			border-bottom: 1px solid $dark-text;
+		}
+
+		.error {
+			color: $color-error;
+			background-color: $color-error-bg;
+		}
+
+		.warning {
+			color: $color-warning;
+			background-color: $color-warning-bg;
 		}
 	}
 
