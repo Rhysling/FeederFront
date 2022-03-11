@@ -45,6 +45,7 @@ interface ILogItemOut {
 	eventDatePT: string;
 	eventDateGmtShort: string;
 	infoObjDisplay: string;
+	showDetail: boolean | undefined;
 }
 
 interface IPostItem {

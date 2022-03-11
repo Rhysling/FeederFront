@@ -33,11 +33,24 @@
 		try {
 			const response: AxiosResponse<ILogItemOut[]> = await $ax.get(`/api/Log/GetItems?asOfDate=${fp.selectedDates[0].toJSON()}&takeCount=${selectedTake}`);
 			logItems = response.data;
-			console.log({logItems});
 		}
 		catch (error) {
 			console.error(error);
 		}
+	};
+
+	const toggleDetail = (id: string) => {
+		let ix = logItems.findIndex(a => a._id === id);
+		if (ix > -1) {
+			logItems[ix].showDetail = !logItems[ix].showDetail;
+		}
+	};
+
+	const toggleAllDetail = () => {
+		if (!logItems.length) return;
+
+		let isOpen = !logItems[0].showDetail;
+		logItems = logItems.map(a => {a.showDetail = isOpen; return a;});
 	};
 
 	
@@ -55,8 +68,13 @@
 <Container>
 	<h1>TwitFeeder Log</h1>
 
-	<div class="now">
-		Now: {now.toUTCString()}
+	<div class="top">
+		<div class="now">
+			Now: {now.toUTCString()}
+		</div>
+		<div class="toggle">
+			<a href="/" on:click|preventDefault={toggleAllDetail}>Toggle Detail</a>
+		</div>
 	</div>
 	<div class="bar">
 		<div>As of:
@@ -89,7 +107,14 @@
 		{#each logItems as item}
 			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.eventDatePT}</div>
 			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.levelName}</div>
-			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.message}</div>
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>
+				{#if item.infoObjDisplay && item.infoObjDisplay.trim()}
+				<a href="/" on:click|preventDefault={() => toggleDetail(item._id) }>{item.message}</a>
+				{:else}
+				{item.message}
+				{/if}
+			</div>
+			<div class="detail" class:show={item.showDetail ? true : undefined}>{item.infoObjDisplay}</div>
 		{/each}
 	</div>
 </Container>
@@ -105,11 +130,24 @@
 		border-bottom: 1px solid $gray-light;
 	}
 
-	.now {
-		font-size: 1.1rem;
-		color: $dark-text;
+	.top {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin: 0;
 		padding: 0.5rem 0.5rem 0;
+
+		.now {
+			font-size: 1.1rem;
+			color: $dark-text;
+			padding: 0.5rem 0.5rem 0;
+		}
+		.toggle {
+			font-size: 0.8rem;
+		}
 	}
+
+	
 
 	.bar {
 		display: flex;
@@ -144,6 +182,27 @@
 			font-weight: bold;
 			color: $main-color;
 			border-bottom: 1px solid $dark-text;
+		}
+
+		.detail {
+			font-size: 0.8rem;
+			grid-column-start: 1;
+			grid-column-end: -1;
+			max-height: 0;
+			transition: max-height 0.25s ease-out;
+			visibility: hidden;
+			opacity: 0;
+			transition: visibility 0s, opacity 0.5s linear;
+			overflow: hidden;
+			background: $gray-lighter;
+
+			&.show {
+				max-height: 500px;
+				transition: max-height 0.25s ease-in;
+				visibility: visible;
+				opacity: 1;
+				overflow: visible;
+			}
 		}
 
 		.error {
