@@ -40,6 +40,7 @@
 		padding: 1rem;
 		background-color: $body-background;
 		width: min($content-max-width, 90%);
+		min-height: 60vh;
 	}
 
 	

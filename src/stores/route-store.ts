@@ -165,7 +165,7 @@ export const navFromUrl = function () {
 	if (r) {
 		currentSlug.set(pathName);
 		currentParams.set(p);
-		document.title = `TF - ${r.title}`;
+		document.title = `TwitFeeder-${r.title}`;
 	} else {
 		window.location.replace(window.location.origin);
 	}

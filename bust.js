@@ -1,6 +1,7 @@
 const fs = require("fs-extra");
 
 // console.log("__dirname: ", __dirname);
+let baseUrl = "https://twitfeeder.azurewebsites.net/";
 
 let formatNum = function (num, len) {
 	let str = num.toString(10);
@@ -33,7 +34,7 @@ fs.readFile(".\\public\\index.html", "utf8")
 		return a
 			.replace(/bundle\.css/g, bundleName + ".css")
 			.replace(/bundle\.js/g, bundleName + ".js")
-			.replace(/(<script>\s*var\sbaseURL\s=\s")[^"]+([^<]*<\/script>)/gm, "$1$2")
+			.replace(/(<script>\s*var\sbaseURL\s=\s")[^"]+([^<]*<\/script>)/gm, `$1${baseUrl}$2`)
 			.replace(/(<script>[^]*var\sapp_isProduction\s=\s)false([^<]*<\/script>)/gm, "$1true$2");
 	})
 	.then((a) => {
