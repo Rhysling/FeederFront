@@ -60,7 +60,7 @@
         Posts: {postCountForFeed(f._id)} &#9679; Users: {ufc}
       </div>
       <div class="post-info">
-        {ellipsis(f.postItems[0].title, 30)} &#9679; {f.postItems[0].pubDateGmt?.substring(0, 22)}{f.postItems[0].pubDateGmt?.substring(25)}
+        {ellipsis(f.postItems[0]?.title ?? "No posts", 30)} &#9679; {f.postItems[0]?.pubDateGmt?.substring(0, 22) ?? "No date"}{f.postItems[0]?.pubDateGmt?.substring(25) ?? ""}
       </div>
     </div>
   {/each}
