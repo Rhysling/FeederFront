@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 
 // console.log("__dirname: ", __dirname);
-let baseUrl = "https://twitfeeder.azurewebsites.net/";
+let baseUrl = "https://twitfeeder.com";
 
 let formatNum = function (num, len) {
 	let str = num.toString(10);

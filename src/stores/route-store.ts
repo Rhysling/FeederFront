@@ -185,7 +185,7 @@ export const navTo = function (e: MouseEvent | null, path: string, params?: any)
 	currentParams.set(params || {});
 
 	let r = findRoute(get(routes), path);
-	if (r) document.title = "TF - " + r.title;
+	if (r) document.title = `TwitFeeder-${r.title}`;
 };
 
 // Back Button
