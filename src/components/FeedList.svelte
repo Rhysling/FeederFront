@@ -203,7 +203,15 @@
 	}
 
 	@media screen and (max-width: $bp-small) {
+		.feed {	
+			h3 {
+				font-size: 1rem;
+			}
 
+			a {
+				font-size: 0.8rem;
+			}
+		}
 	}
 
 </style>

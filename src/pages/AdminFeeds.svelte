@@ -54,13 +54,13 @@
         {f.title}
       </div>
       <div class="feed-info">
-        {f._id} &#9679; Built: {f.lastBuildDate.substring(0, 19)}
+        {f.description} &#9679; {f._id}
       </div>
       <div class="feed-info">
-        Posts: {postCountForFeed(f._id)} &#9679; Users: {ufc}
+        Built: {f.lastBuildDate.substring(0, 19)} &#9679; Posts: {postCountForFeed(f._id)} &#9679; Users: {ufc}
       </div>
       <div class="post-info">
-        {ellipsis(f.postItems[0]?.title ?? "No posts", 30)} &#9679; {f.postItems[0]?.pubDateGmt?.substring(0, 22) ?? "No date"}{f.postItems[0]?.pubDateGmt?.substring(25) ?? ""}
+        {ellipsis(f.postItems[0]?.title ?? "No posts", 82)} &#9679; {f.postItems[0]?.pubDateGmt?.substring(0, 16) ?? "No date"}
       </div>
     </div>
   {/each}
@@ -105,7 +105,7 @@
   }
 
   .post-info {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     font-style: italic;
     margin: 0 0 0 1rem;
   }

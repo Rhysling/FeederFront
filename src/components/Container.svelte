@@ -46,8 +46,9 @@
 	
 
 	@media screen and (max-width: $bp-small) {
-		
-
+		.content {
+			padding: 1rem 0;
+		}
 	}
 
 </style>

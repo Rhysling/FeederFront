@@ -53,4 +53,15 @@
     }
   }
 
+  @media screen and (max-width: $bp-small) {
+
+  footer {
+      font-size: 0.8rem;
+      a {
+        font-size: 0.8rem;
+      }
+    }
+
+  }
+
 </style>
