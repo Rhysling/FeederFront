@@ -216,7 +216,7 @@
 	</div>
 	<div class="add-subtext">
 		<a href="/" on:click|preventDefault={ () => isShowModal = true }>Hint</a> 
-		- how to find screen name to identify feed.
+		- how to find screen names for {selectedSource.text}.
 	</div>
 	<div class="add-searchbtn">
 		<button on:click={() => search()}  disabled={!isEnabledSearch}>Search</button>

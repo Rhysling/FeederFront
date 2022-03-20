@@ -35,7 +35,7 @@
 
 <p>
 	By accessing our Site or our Service, you accept our Privacy Policy and Terms of Use (found
-	here: <a href="https://twitfeeder/terms-of-service">https://twitfeeder/terms-of-service</a>), and you consent to our collection, storage, use and
+	here: <a href="https://twitfeeder.com/terms-of-service">https://twitfeeder.com/terms-of-service</a>), and you consent to our collection, storage, use and
 	disclosure of your Personal Information as described in this Privacy Policy.
 </p>
 
@@ -82,11 +82,11 @@
 	Auth0 Inc. ("Auth0") for account registration and to authenticate you prior to using these
 	features.  By registering for the Service and each time you authenticate with the Service you
 	accept the privacy policy and other terms and conditions of Auth0, all of which may be found
-	here: <a href="https://auth0.com/">https://auth0.com/</a>.  When registering you may choose to
-	either create a username and
+	here: <a href="https://auth0.com/" target="_blank">https://auth0.com</a>.  When registering you
+	may choose to either create a username and
 	password for the Service or to use a third-party authentication service (such as Google or
 	Twitter) where you have an account. By registering, you are authorizing us to collect, store and
-	use the information you provide, and any information made available to us by a third-party
+	use the information you provide and any information made available to us by a third-party
 	authentication service you select in accordance with this Privacy Policy.
 </p>
 
@@ -201,10 +201,12 @@
 
 <h2>VII. CONTACT US</h2>
 
-If you have any questions regarding this Privacy Policy or the practices of this Site, please 
-contact us by sending an email to twitfeeder@polson.com.
+<p>
+  If you have any questions regarding this Privacy Policy or the practices of this Site, please 
+  contact us by sending an email to twitfeeder@polson.com.
+</p>
 
-<p>Last Updated: This Privacy Policy was last updated on March 20, 2022.</p>
+<p>Last Update: This Privacy Policy was last updated on March 20, 2022.</p>
 
 <p>TwitFeeder is a service of Polson Company, LLC.</p>
 

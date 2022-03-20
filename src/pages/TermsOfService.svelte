@@ -13,16 +13,22 @@
 	<h1>Terms of Service</h1>
 
 <p>
-  Please read these terms of service ("terms", "terms of service") carefully before using the TwitFeeder
-  website (the "service") operated by Polson Company, LLC ("us", "we," "our").
+  Please read these terms of service ("Terms of Service") carefully before using the TwitFeeder
+  website (the "Service") operated by Polson Company, LLC ("us", "we," "our").
 </p>
 
 <h2>Conditions of Use</h2>
 
 <p>
-  We will provide their services to you, which are subject to the conditions stated below in this document.
+  We will provide the Service to you subject to the conditions stated in this document.
   Every time you visit this website or use its services, you accept the following conditions. Therefore, we
   urge you to read them carefully.
+</p>
+
+<p style="font-weight:bold;">
+  The Service is provided &quot;as is,&quot; without warranty
+  of any kind, express or implied, including but not limited to the warranties of merchantability,
+  fitness for a particular purpose and noninfringement.
 </p>
 
 <h2>Privacy Policy</h2>
@@ -57,7 +63,7 @@
 
 <p>
   By visiting this website, you agree that the laws of the State of Washington, without regard to principles
-  of conflict laws, will govern these terms of service, or any dispute of any sort that might come between
+  of conflict laws, will govern these Terms of Service, or any dispute of any sort that might come between
   us and you, or any of our respective principals, business partners, and associates.
 </p>
 
@@ -103,7 +109,9 @@
   discretion.
 </p>
 
-<p>Polson Company, LLC</p>
+<p>Last Update: These Terms of Service were last updated on March 20, 2022.</p>
+
+<p>TwitFeeder is a service of Polson Company, LLC.</p>
 
 </Container>
 
