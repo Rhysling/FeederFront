@@ -8,7 +8,12 @@
 	let userList: IUserInfo[] = [];
 	let currentUser: IUserInfo | undefined;
   
+	let feedCountTotal: number | undefined = undefined;
+	let feedCountLimit: number | undefined = undefined;
 	let feedToAdd: IFeed | null | undefined = null;
+
+	const setFeedCountTotal = (e: CustomEvent<number>) => feedCountTotal = e.detail;
+	const setFeedCountLimit = (e: CustomEvent<number>) => feedCountLimit = e.detail;
 	const addFeed = (e: CustomEvent<IFeed>) => feedToAdd = e.detail;
   
 	const loadUsers = async () => {
@@ -43,8 +48,18 @@
 		</div>
 	</div>
 
-	<AddFeed on:add-feed={addFeed} />
-	<FeedList userId={currentUser?.userId || undefined} {feedToAdd} isEdit={true} />
+	<AddFeed
+		{feedCountTotal}
+		{feedCountLimit}
+		on:add-feed={addFeed}
+	/>
+	<FeedList
+		userId={currentUser?.userId || undefined}
+		{feedToAdd}
+		isEdit={true}
+		on:feed-count-total={setFeedCountTotal}
+		on:feed-count-limit={setFeedCountLimit}
+	/>
 </Container>
 
 <style lang="scss">

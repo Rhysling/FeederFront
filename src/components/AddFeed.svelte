@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Modal from "../components/Modal.svelte";
 	import { fade } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
 
@@ -11,6 +12,7 @@
 	const dispatch = createEventDispatcher();
   
 	let state = "initial"; // initial editing missing found notfound added
+	let isShowModal = false;
 
 	let sources = [
 		{ id: "tw", text: "Twitter" },
@@ -144,6 +146,10 @@
 
 	let search = async () => {
 		screenName = screenName.trim();
+
+		if (screenName.startsWith("@"))
+			screenName = screenName.substring(1);
+
 		if (!screenName) {
 			state = "initial";
 			return;
@@ -208,7 +214,10 @@
 	<div class="add-screenname">
 		<input id="screenname" type="text" bind:value={screenName} on:keyup={() => setEditing()} placeholder="Screen name" class:is-error={isScreenNameError} style="width:100%; display:block;" />
 	</div>
-	<div class="add-subtext">Screen name to identify feed (found in URL).</div>
+	<div class="add-subtext">
+		<a href="/" on:click|preventDefault={ () => isShowModal = true }>Hint</a> 
+		- how to find screen name to identify feed.
+	</div>
 	<div class="add-searchbtn">
 		<button on:click={() => search()}  disabled={!isEnabledSearch}>Search</button>
 	</div>
@@ -228,6 +237,13 @@
 		<i class="fa-solid fa-circle-notch fa-spin"></i>
 	</div>
 </div>
+<Modal {isShowModal} on:hide-modal={() => isShowModal = false}>
+	{#if selectedSource.id == "go"}
+	<img src="/assets/img/hint-gocomics.png" alt="Hint to search for Go Comics feeds" />
+	{:else}
+	<img src="/assets/img/hint-twitter.png" alt="Hint to search for Twitter feeds" />
+	{/if}
+</Modal>
 
 <style lang="scss">
 	@import "../styles/_custom-variables.scss";

@@ -5,15 +5,17 @@
 
   const dispatch = createEventDispatcher();
 
-  function setModal(val: boolean) {
-		dispatch("setmodal", { val });
+  function hideModal() {
+		dispatch("hide-modal", null);
   }
 
 </script>
 
-<div class="modal" on:click={() => setModal(false)} style="display:{isShowModal ? "block" : "none"}">
-  <i class="close fas fa-times" on:click={() => setModal(false)} title="close"></i>
-  <slot />
+<div class="modal" on:click={hideModal} style="display:{isShowModal ? "flex" : "none"}">
+  <i class="close fas fa-times" on:click={hideModal} title="close"></i>
+  <div class="content" on:click|stopPropagation={()=>{}}>
+    <slot />
+  </div>
 </div>
 
 <style lang="scss">
@@ -27,8 +29,9 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
   }
 
   .close {
@@ -46,6 +49,11 @@
       text-decoration: none;
       cursor: pointer;
     }
+  }
+
+  .content {
+    max-width: 80vw;
+    max-height: 80vh;
   }
 
 </style>
