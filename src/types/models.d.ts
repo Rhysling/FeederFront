@@ -1,5 +1,5 @@
-// Using MSBuild ver. 6.0.200 to load projects.
-// Generated - 2022/03/07-08:04:23
+// Using MSBuild ver. 6.0.201 to load projects.
+// Generated - 2022/03/19-15:00:05
 
 // SOLUTION: FeederBack
 
@@ -45,7 +45,6 @@ interface ILogItemOut {
 	eventDatePT: string;
 	eventDateGmtShort: string;
 	infoObjDisplay: string;
-	showDetail: boolean | undefined;
 }
 
 interface IPostItem {
@@ -75,6 +74,8 @@ interface IUserInfo {
 	isAdmin: boolean;
 	isDisabled: boolean;
 	lastLogin: INullable<string>;
+	feedCountLimit: number;
+	feedCountTotal: number;
 	feedCounts: Array<IKVP>;
 }
 

@@ -5,6 +5,8 @@
   import { httpClient as ax } from "../stores/httpclient-store";
 
 	let ufvm: IUsersFeedsVM | undefined = undefined;
+  let editLimitUserId = "";
+  let newFeedCountLimit = "";
   
 	const getUsersFeeds = async () => {
 		try {
@@ -39,6 +41,36 @@
 
   };
 
+  const editFCL = (uid: string, fcl: number) => {
+    editLimitUserId = uid;
+    newFeedCountLimit = fcl + "";
+  };
+
+  const saveFCL = async () => {
+    if (!editLimitUserId || !newFeedCountLimit) return;
+
+    let fcl = parseInt(newFeedCountLimit);
+    if (isNaN(fcl) || fcl < 1) return;
+
+    try {
+      await $ax.post(`/api/User/SetFeedCountLimit?userId=${editLimitUserId}&feedCountLimit=${fcl}`);
+      let ix = ufvm?.users.findIndex(a => a._id === editLimitUserId) ?? -1;
+      if (ix >= 0 && ufvm) {
+        ufvm.users[ix].feedCountLimit = fcl;
+      }
+
+      cancelFCL();
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
+
+  const cancelFCL = () => {
+    editLimitUserId = "";
+    newFeedCountLimit = "";
+  };
+
   getUsersFeeds();
 
 </script>
@@ -64,9 +96,15 @@
         Last login: {u.lastLogin} &#9679; Key: {u.subscriptionKey}
       </div>
       <div class="user-info">
-        {#each u.feedCounts as fc, i }
-        {fc.key}: {fc.value} {#if i < (u.feedCounts.length - 1)}&#9679;&nbsp;{/if}
+        {#each u.feedCounts as fc }
+        {fc.key}: {fc.value} &#9679;&nbsp;
         {/each}
+        {#if u._id == editLimitUserId}
+        Limit: <input type="text" bind:value={newFeedCountLimit}> -
+          <a href="/" on:click|preventDefault={async () => await saveFCL()}>Save</a>-<a href="/" on:click|preventDefault={cancelFCL}>Cancel</a>
+        {:else}
+        Limit: {u.feedCountLimit} - <a href="/" on:click|preventDefault={() => editFCL(u._id || "", u.feedCountLimit)}>Edit</a>
+        {/if}
       </div>
     </div>
   {/each}
@@ -102,6 +140,14 @@
   .user-info {
     font-size: 0.9rem;
     margin: 0 0 0 1rem;
+
+    input {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.1em;
+      margin: 0;
+      width: 2rem;
+    }
   }
 
   .is-disabled {

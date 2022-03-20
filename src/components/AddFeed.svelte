@@ -5,6 +5,9 @@
 	import type { AxiosResponse } from "axios";
   import { httpClient as ax } from "../stores/httpclient-store";
 
+	export let feedCountTotal: number | undefined = undefined;
+	export let feedCountLimit: number | undefined = undefined;
+
 	const dispatch = createEventDispatcher();
   
 	let state = "initial"; // initial editing missing found notfound added
@@ -29,6 +32,7 @@
 	let showAddedResult = false;
 
 	let lookupFeed: IFeed | null | undefined = null;
+	let message = "";
 
 	//api/LookupSource/?feedType=xxx&screenName=yyy
 	const lookupFeedAsync = async () => {
@@ -89,7 +93,7 @@
 				isError = false;
 				isScreenNameError = false;
 				isEnabledSearch = false;
-				isEnabledAdd = true;
+				isEnabledAdd = ((feedCountTotal ?? 0) < (feedCountLimit ?? 0)); // true if space left
 				isEnabledCancel = true;
 				break;
 			case "notfound":
@@ -103,6 +107,30 @@
 				isEnabledCancel = true;
 				break;
 		}
+	};
+
+	let setMessage = (fcTot: number | undefined, fcLim: number | undefined) => {
+		if (fcTot === undefined || fcLim === undefined) {
+			message = "";
+			return;
+		}
+
+		if (fcTot === 0) {
+			message = `Add up to ${fcLim} feeds.`;
+			return;
+		}
+
+		if (fcTot >= fcLim) {
+			message = `You have ${fcTot} feeds. Delete one to add another.`;
+			return;
+		}
+
+		if (fcTot > 0 && fcLim > 0) {
+			message = `You have ${fcTot} of ${fcLim} feeds.`;
+			return;
+		}
+
+		message = "";
 	};
 
 	let setEditing = () => {
@@ -161,11 +189,13 @@
 	};
 
 	$: setState(state);
+	$: setMessage(feedCountTotal, feedCountLimit);
 
 </script>
 
 <div class="add-feed">
 	<div class="add-title">Add a Feed</div>
+	<div class="add-message">{message}</div>
 	<div class="add-type">
 		<select bind:value={selectedSource}>
 			{#each sources as s}
@@ -225,7 +255,7 @@
 		grid-template-columns: 1fr 2fr 1fr;
 		grid-template-rows: auto;
 		grid-template-areas: 
-			"title  title      title"
+			"title  message    message"
 			"type   screenname searchbtn"
 			".      subtext    subtext"
 			"result result     resbtn";
@@ -243,6 +273,13 @@
 		font-weight: bold;
 		color: $dark-text;
 	}
+	.add-message {
+		grid-area: message;
+		padding: 0.5rem;
+		font-size: 0.9rem;
+		text-align: right;
+	}
+
 	.add-type {
 		grid-area: type;
 		padding: 0.5rem 0.5rem 0;

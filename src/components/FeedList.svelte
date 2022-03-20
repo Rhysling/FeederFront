@@ -1,5 +1,5 @@
 <script lang="ts">
-  
+  import { createEventDispatcher } from 'svelte';
 	import type { AxiosResponse } from "axios";
   import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
   import "../js/copy-to-clipboard";
@@ -12,6 +12,8 @@
 	export let userId = "public-user";
 	export let isEdit = false;
 	export let feedToAdd: IFeed | null | undefined = null;
+
+	const dispatch = createEventDispatcher();
 
 	let feeds: IFeed[] = [];
 	let feedBatches: IFeedBatch[] = [];
@@ -88,6 +90,7 @@
 		let f = feeds.find(a => a._id == newFeed._id);
 		if (!f) {
 			feeds.push(newFeed);
+			dispatch("feed-count-total", feeds.length);
 			makeBatches();
 		}
 	};
@@ -107,6 +110,7 @@
 		}
 
 		feeds = feeds.filter(f => f.feedId != fid);
+		dispatch("feed-count-total", feeds.length);
 		makeBatches();
 	};
 
@@ -114,10 +118,13 @@
 		userInfo = await getUserInfoAsync(uid);
 		if (!userInfo) {
 			feedBatches = [];
+			dispatch("feed-count-limit", undefined);
 			return;
 		} 
 
 		await loadFeeds(uid);
+		dispatch("feed-count-limit", userInfo.feedCountLimit);
+		dispatch("feed-count-total", feeds.length);
 	};
 
 	// ** Reactives **
