@@ -103,7 +103,7 @@
 
 <h2>II. HOW WE USE AND SHARE INFORMATION</h2>
 
-<h3>Personal Information</h3>
+<h3>1. Personal Information</h3>
 
 <p>
 	Except as otherwise stated in this Privacy Policy, we do not sell, trade, rent or otherwise share
@@ -126,7 +126,7 @@
 	as required or permitted by law.
 </p>
 
-<h3>Non-Personal Information</h3>
+<h3>2. Non-Personal Information</h3>
 
 <p>
 	In general, we use Non-Personal Information to help us improve the Service and customize the
@@ -193,7 +193,7 @@
 <p>
 	The Company reserves the right to change this policy and our Terms of Service at any
 	time.  We will notify you of significant changes to our Privacy Policy by sending a notice to the
-	primary email address specified in your account or by placing a prominent notice on our site.
+	primary email address specified in your account (if provided) or by placing a prominent notice on our site.
 	Significant changes will go into effect 30 days following such notification. Non-material changes
 	or clarifications will take effect immediately. You should periodically check the Site and this
 	privacy page for updates.

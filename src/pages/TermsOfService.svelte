@@ -10,11 +10,11 @@
 </script>
 
 <Container>
-	<h1>Terms of Service</h1>
+<h1>Terms of Service</h1>
 
 <p>
   Please read these terms of service ("Terms of Service") carefully before using the TwitFeeder
-  website (the "Service") operated by Polson Company, LLC ("us", "we," "our").
+  website (the "Service") operated by Polson Company, LLC ("we," "us," "our").
 </p>
 
 <h2>Conditions of Use</h2>
@@ -28,7 +28,7 @@
 <p style="font-weight:bold;">
   The Service is provided &quot;as is,&quot; without warranty
   of any kind, express or implied, including but not limited to the warranties of merchantability,
-  fitness for a particular purpose and noninfringement.
+  fitness for a particular purpose, and noninfringement.
 </p>
 
 <h2>Privacy Policy</h2>
@@ -105,7 +105,7 @@
 </p>
 
 <p>
-  We reserve all rights to terminate accounts, edit or remove content and cancel orders at their sole
+  We reserve all rights to terminate accounts, edit or remove content and cancel orders at our sole
   discretion.
 </p>
 
