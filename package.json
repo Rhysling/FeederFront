@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.19.4",
-    "axios": "0.26.0",
+    "axios": "^0.26.1",
     "flatpickr": "^4.6.10",
     "sirv-cli": "^2.0.0"
   }
