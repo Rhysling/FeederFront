@@ -53,3 +53,7 @@ type PlantListFilterType = {
 interface ILinkEdit extends ILink {
   sortOrderEntered: string;
 }
+
+interface ILogItemOut {
+  showDetail: boolean;
+}

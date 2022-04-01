@@ -5,7 +5,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w 2>&1 | tee buildlog.txt",
     "start": "sirv public",
-    "validate": "svelte-check",
+    "check": "svelte-check 2>&1 | tee ts-validation.txt",
     "bust": "node bust.js"
   },
   "devDependencies": {

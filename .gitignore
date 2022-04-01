@@ -5,6 +5,7 @@
 tools/
 secrets/
 buildlog.txt
+ts-validation.txt
 
 /.vscode/
 .DS_Store
