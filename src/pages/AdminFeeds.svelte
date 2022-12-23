@@ -5,7 +5,7 @@
   import { httpClient as ax } from "../stores/httpclient-store";
 
 	let ufvm: IUsersFeedsVM | undefined = undefined;
-  
+
 	const getUsersFeeds = async () => {
 		try {
 			const response: AxiosResponse<IUsersFeedsVM> = await $ax.get("/api/Stats/UsersFeeds");
@@ -32,11 +32,12 @@
     return ufc ? ufc.value : "none";
   }
 
-  const feedState = (f: IFeed, ufc: string) => {
-    if (!f.isActive) return "error";
-    if (ufc == "none") return "warning"
-    return "success";
-  };
+	const feedState = (f: IFeed) => {
+		if (f.statusCode >= 200 && f.statusCode < 300) return "success";
+		if (f.statusCode >= 300 && f.statusCode < 500) return "warning"
+		if (f.statusCode >= 500) return "error"
+		return "unknown";
+	};
 
   getUsersFeeds();
 
@@ -44,20 +45,23 @@
 
 <Container>
 	<h1>Admin Feeds</h1>
-  
+
   {#if ufvm?.feeds}
   {#each ufvm.feeds as f}
     {@const ufc = userCountForFeed(f._id)}
-    {@const state = feedState(f, ufc)}
+    {@const state = feedState(f)}
     <div class="feed">
-      <div class="feed-title" class:success={state == "success"} class:warning={state == "warning"} class:error={state == "error"}>
-        {f.title}
+      <div class="feed-title" class:success={state == "success"} class:warning={state == "warning"} class:error={state == "error"} class:unknown={state == "unknown"}>
+        <div>{f.title}</div>
+				<div>({f.statusCode || 0})</div>
+
       </div>
       <div class="feed-info">
         {f.description} &#9679; {f._id}
       </div>
       <div class="feed-info">
-        Built: {f.lastBuildDate.substring(0, 19)} &#9679; Posts: {postCountForFeed(f._id)} &#9679; Users: {ufc}
+        Built: {f.lastBuildDate.substring(0, 19)} &#9679; Posts: {postCountForFeed(f._id)} &#9679;
+				<span class:warning={ufc == "none"}>Users: {ufc}</span>
       </div>
       <div class="post-info">
         {ellipsis(f.postItems[0]?.title ?? "No posts", 82)} &#9679; {f.postItems[0]?.pubDateGmt?.substring(0, 16) ?? "No date"}
@@ -65,7 +69,7 @@
     </div>
   {/each}
   {/if}
-	
+
 </Container>
 
 <style lang="scss">
@@ -83,7 +87,12 @@
     line-height: 1.2em;
   }
 
-  .feed-title {
+	.feed-title {
+		display: flex;
+		justify-content: space-between;
+	}
+
+  .feed-title, span {
     color: $dark-text;
 
     &.success {
@@ -96,6 +105,10 @@
 
     &.error {
       background-color: $color-error-bg;
+    }
+
+		&.unknown {
+      background-color: $color-unknown-bg;
     }
   }
 
@@ -112,7 +125,7 @@
 
 
 	@media screen and (max-width: $bp-small) {
-		
+
 
 	}
 

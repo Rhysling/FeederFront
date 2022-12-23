@@ -3,7 +3,7 @@
 	import type { AxiosResponse } from "axios";
   import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
   import "../js/copy-to-clipboard";
-  
+
 	interface IFeedBatch {
 		feedType: string;
 		feeds: IFeed[];
@@ -120,7 +120,7 @@
 			feedBatches = [];
 			dispatch("feed-count-limit", undefined);
 			return;
-		} 
+		}
 
 		await loadFeeds(uid);
 		dispatch("feed-count-limit", userInfo.feedCountLimit);
@@ -137,14 +137,14 @@
 </script>
 
 <h1>{feedListTitle}</h1>
-	
+
 	{#each feedBatches as fb}
 		<h2>{fb.feedType}</h2>
 		{#each fb.feeds as feed}
 			<div class="feed">
 				<div class="left">
 					<h3>{feed.title} {#if feed.description != feed.title}({feed.description}){/if}</h3>
-					<a href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}" target="_blank" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a>
+					<a href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}" target="_blank" rel="noreferrer" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a>
 					<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
 				</div>
 				<div class="right">
@@ -196,7 +196,7 @@
 		.right {
 			flex: 0 1 0;
 		}
-		
+
 		a {
 			display: block;
 			font-size: 1.0rem;
@@ -210,7 +210,7 @@
 	}
 
 	@media screen and (max-width: $bp-small) {
-		.feed {	
+		.feed {
 			h3 {
 				font-size: 1rem;
 			}

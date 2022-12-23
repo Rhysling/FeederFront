@@ -109,6 +109,7 @@ interface IFeed {
 	postItems: Array<IPostItem>;
 	lastSave: string;
 	lastPostKey: string;
+	statusCode: number;
 	isUpdating: boolean;
 	isActive: boolean;
 	exists: boolean;

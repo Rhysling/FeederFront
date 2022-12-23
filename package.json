@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w 2>&1 | tee buildlog.txt",
-    "start": "sirv public",
+    "start": "sirv public --single --port 5050",
     "check": "svelte-check 2>&1 | tee ts-validation.txt",
     "bust": "node bust.js"
   },

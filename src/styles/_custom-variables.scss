@@ -16,9 +16,10 @@ $color-error:      rgb(202, 60, 60); /* this is a maroon */
 $color-error-bg:   rgb(255, 212, 209);
 $color-warning:    rgb(223, 117, 20); /* this is an orange */
 $color-warning-bg: lighten($color-warning, 30%);
+$color-unknown-bg: #cccccc;
 
 $gray-light:       $body-text;
-$gray-lighter:     lighten($dark-text, 70%); 
+$gray-lighter:     lighten($dark-text, 70%);
 
 $bp-small:          600px;
 $content-max-width: 600px;

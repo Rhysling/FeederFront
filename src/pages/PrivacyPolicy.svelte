@@ -5,7 +5,7 @@
   // import { httpClient as ax } from "../stores/httpclient-store";
   // import { navTo } from "../stores/route-store.js";
   // import { isLoggedIn } from "../stores/user-store.js";
-  
+
 
 </script>
 
@@ -82,7 +82,7 @@
 	Auth0 Inc. ("Auth0") for account registration and to authenticate you prior to using these
 	features.  By registering for the Service and each time you authenticate with the Service you
 	accept the privacy policy and other terms and conditions of Auth0, all of which may be found
-	here: <a href="https://auth0.com/" target="_blank">https://auth0.com</a>.  When registering you
+	here: <a href="https://auth0.com/" target="_blank" rel="noreferrer">https://auth0.com</a>.  When registering you
 	may choose to either create a username and
 	password for the Service or to use a third-party authentication service (such as Google or
 	Twitter) where you have an account. By registering, you are authorizing us to collect, store and
@@ -202,7 +202,7 @@
 <h2>VII. CONTACT US</h2>
 
 <p>
-  If you have any questions regarding this Privacy Policy or the practices of this Site, please 
+  If you have any questions regarding this Privacy Policy or the practices of this Site, please
   contact us by sending an email to twitfeeder@polson.com.
 </p>
 
@@ -229,7 +229,7 @@
   }
 
 	@media screen and (max-width: $bp-small) {
-		
+
 
 	}
 
