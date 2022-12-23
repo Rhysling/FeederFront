@@ -1,19 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
-  export let isShowModal = false;
+	export let isShowModal = false;
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
-  function hideModal() {
-		dispatch("hide-modal", null);
-  }
+	const hideModal = () => dispatch("hide-modal", null);
+
+	const hideModalKey = (e: KeyboardEvent) => {
+		const code = e.code;
+		alert(code);
+	};
+
 
 </script>
 
-<div class="modal" on:click={hideModal} style="display:{isShowModal ? "flex" : "none"}">
-  <i class="close fas fa-times" on:click={hideModal} title="close"></i>
-  <div class="content" on:click|stopPropagation={()=>{}}>
+<div class="modal" on:click={hideModal} on:keyup={(e) => hideModalKey(e)} style="display:{isShowModal ? "flex" : "none"}">
+  <i class="close fas fa-times" on:click={hideModal} on:keyup={(e) => hideModalKey(e)} title="close"></i>
+  <div class="content" on:click|stopPropagation={()=>{}} on:keyup|stopPropagation={() => {}}>
     <slot />
   </div>
 </div>
@@ -42,10 +46,10 @@
     font-size: 28px;
     font-weight: bold;
     z-index: 110;
-    
+
     &:hover,
     &:focus {
-      color: black;
+      color: white;
       text-decoration: none;
       cursor: pointer;
     }

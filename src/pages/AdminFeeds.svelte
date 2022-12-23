@@ -92,7 +92,12 @@
 		justify-content: space-between;
 	}
 
-  .feed-title, span {
+	span.warning {
+		color: $dark-text;
+		background-color: $color-warning-bg;
+	}
+
+  .feed-title {
     color: $dark-text;
 
     &.success {
