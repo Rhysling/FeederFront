@@ -58,7 +58,7 @@
 
 		feedBatches = [];
 
-		let ft = feeds.filter( f => f.feedType == "tw").sort(sortFn);
+		const ft = feeds.filter( f => f.feedType == "tw").sort(sortFn);
 
 		if (ft.length) {
 			feedBatches.push({
@@ -67,12 +67,21 @@
 			});
 		}
 
-		let fg = feeds.filter( f => f.feedType == "go").sort(sortFn);
+		const fg = feeds.filter( f => f.feedType == "go").sort(sortFn);
 
 		if (fg.length) {
 			feedBatches.push({
 				feedType: "Go Comics",
 				feeds: fg
+			});
+		}
+
+		const fm = feeds.filter( f => f.feedType == "ma").sort(sortFn);
+
+		if (fm.length) {
+			feedBatches.push({
+				feedType: "Mastodon",
+				feeds: fm
 			});
 		}
 	};

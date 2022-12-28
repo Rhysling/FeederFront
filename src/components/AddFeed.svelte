@@ -10,13 +10,14 @@
 	export let feedCountLimit: number | undefined = undefined;
 
 	const dispatch = createEventDispatcher();
-  
+
 	let state = "initial"; // initial editing missing found notfound added
 	let isShowModal = false;
 
 	let sources = [
 		{ id: "tw", text: "Twitter" },
-		{ id: "go", text: "Go Comics" }
+		{ id: "go", text: "Go Comics" },
+		{ id: "ma", text: "Mastodon" }
 	];
 	let selectedSource = sources[0];
 
@@ -215,7 +216,7 @@
 		<input id="screenname" type="text" bind:value={screenName} on:keyup={() => setEditing()} placeholder="Screen name" class:is-error={isScreenNameError} style="width:100%; display:block;" />
 	</div>
 	<div class="add-subtext">
-		<a href="/" on:click|preventDefault={ () => isShowModal = true }>Hint</a> 
+		<a href="/" on:click|preventDefault={ () => isShowModal = true }>Hint</a>
 		- how to find screen names for {selectedSource.text}.
 	</div>
 	<div class="add-searchbtn">
@@ -240,6 +241,8 @@
 <Modal {isShowModal} on:hide-modal={() => isShowModal = false}>
 	{#if selectedSource.id == "go"}
 	<img src="/assets/img/hint-gocomics.png" alt="Hint to search for Go Comics feeds" />
+	{:else if selectedSource.id == "ma"}
+	<img src="/assets/img/hint-mastodon.png" alt="Hint to search for Mastodon feeds" />
 	{:else}
 	<img src="/assets/img/hint-twitter.png" alt="Hint to search for Twitter feeds" />
 	{/if}
@@ -270,7 +273,7 @@
 		display: grid;
 		grid-template-columns: 1fr 2fr 1fr;
 		grid-template-rows: auto;
-		grid-template-areas: 
+		grid-template-areas:
 			"title  message    message"
 			"type   screenname searchbtn"
 			".      subtext    subtext"
@@ -362,7 +365,7 @@
 
 
 	@media screen and (max-width: $bp-small) {
-		
+
 
 	}
 

@@ -38,7 +38,7 @@ const u = writable<IUserAuth0>(getEmptyU());
 /**
  * Initializes the Auth0 client
  */
- const initAuth0Async = async () => {
+const initAuth0Async = async () => {
   auth0 = await createAuth0Client(getSettings(app_isProduction).auth0);
   let isAuthenticated = await auth0.isAuthenticated();
 
@@ -85,13 +85,13 @@ const logout = () => {
   try {
     //console.log("Logging out");
     u.set(getEmptyU());
-	
+
     if (auth0) {
       auth0.logout({
         returnTo: window.location.origin
       });
     }
-      
+
   } catch (err) {
     console.error("Logout failed", err);
   }
@@ -138,7 +138,7 @@ const getIdTokenClaimsAsync = async () => {
     u.set(getEmptyU());
     return;
   }
-  
+
   let idTokenClaims = await auth0.getIdTokenClaims();
 
   u.update(a => {
