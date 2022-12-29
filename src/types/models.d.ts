@@ -100,9 +100,10 @@ interface IFeed {
 	tbl: string;
 	feedType: string;
 	feedId: string;
-	title: INullable<string>;
-	description: INullable<string>;
-	link: INullable<string>;
+	title: string;
+	description: string;
+	link: string;
+	iconUrl: string;
 	lastBuildDate: string;
 	language: INullable<string>;
 	category: INullable<string>;
