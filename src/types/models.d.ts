@@ -100,6 +100,7 @@ interface IFeed {
 	tbl: string;
 	feedType: string;
 	feedId: string;
+	userName: INullable<string>;
 	title: string;
 	description: string;
 	link: string;

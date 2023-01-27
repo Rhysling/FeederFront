@@ -152,7 +152,8 @@
 		{#each fb.feeds as feed}
 			<div class="feed">
 				<div class="left">
-					<h3>{feed.title} {#if feed.description != feed.title}({feed.description}){/if}</h3>
+					<h3>{feed.title}</h3>
+					{#if feed.description && feed.description != feed.title}<div class="description">{feed.description}</div>{/if}
 					<a href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}" target="_blank" rel="noreferrer" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a>
 					<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
 				</div>
@@ -188,6 +189,11 @@
 		display: block;
 		font-weight: bold;
 		font-size: 1.15rem;
+		color: $main-color;
+	}
+
+	.description {
+		font-size: 0.9rem;
 		color: $main-color;
 	}
 
