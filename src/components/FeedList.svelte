@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from "svelte";
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
-  import "../js/copy-to-clipboard";
+	import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
+	import "../js/copy-to-clipboard";
 
 	interface IFeedBatch {
 		feedType: string;
@@ -21,30 +21,34 @@
 	let feedListTitle = "";
 	let burl = getBaseURL();
 
-
 	const getFeedsAsync = async (uid: string) => {
 		try {
-			const response: AxiosResponse<IFeed[]> = await $ax.get(`/api/User/GetFeedsForUser/${uid}`);
+			const response: AxiosResponse<IFeed[]> = await $ax.get(
+				`/api/User/GetFeedsForUser/${uid}`
+			);
 			return response.data;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const getUserInfoAsync = async (uid: string) => {
 		try {
-			const response: AxiosResponse<IUserInfo> = await $ax.get(`/api/User/GetUserInfo/${uid}`);
+			const response: AxiosResponse<IUserInfo> = await $ax.get(
+				`/api/User/GetUserInfo/${uid}`
+			);
 			return response.data;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const loadFeeds = async (uid: string) => {
-		feeds = await getFeedsAsync(uid) ?? [];
-		if (!feeds.length) return;
+		feeds = (await getFeedsAsync(uid)) ?? [];
+		if (!feeds.length) {
+			feedBatches = [];
+			return;
+		}
 
 		makeBatches();
 	};
@@ -53,35 +57,35 @@
 		const sortFn = (a: IFeed, b: IFeed) => {
 			let at = (a.title ?? "").toLowerCase();
 			let bt = (b.title ?? "").toLowerCase();
-			return ((at < bt) ? -100 : 0) + ((at > bt) ? 100 : 0)
-		}
+			return (at < bt ? -100 : 0) + (at > bt ? 100 : 0);
+		};
 
 		feedBatches = [];
 
-		const ft = feeds.filter( f => f.feedType == "tw").sort(sortFn);
+		const ft = feeds.filter((f) => f.feedType == "tw").sort(sortFn);
 
 		if (ft.length) {
 			feedBatches.push({
 				feedType: "Twitter",
-				feeds: ft
+				feeds: ft,
 			});
 		}
 
-		const fg = feeds.filter( f => f.feedType == "go").sort(sortFn);
+		const fg = feeds.filter((f) => f.feedType == "go").sort(sortFn);
 
 		if (fg.length) {
 			feedBatches.push({
 				feedType: "Go Comics",
-				feeds: fg
+				feeds: fg,
 			});
 		}
 
-		const fm = feeds.filter( f => f.feedType == "ma").sort(sortFn);
+		const fm = feeds.filter((f) => f.feedType == "ma").sort(sortFn);
 
 		if (fm.length) {
 			feedBatches.push({
 				feedType: "Mastodon",
-				feeds: fm
+				feeds: fm,
 			});
 		}
 	};
@@ -91,12 +95,11 @@
 
 		try {
 			await $ax.post(`/api/User/AddFeed?userid=${userId}`, newFeed);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 		}
 
-		let f = feeds.find(a => a._id == newFeed._id);
+		let f = feeds.find((a) => a._id == newFeed._id);
 		if (!f) {
 			feeds.push(newFeed);
 			dispatch("feed-count-total", feeds.length);
@@ -105,20 +108,21 @@
 	};
 
 	const removeFeedAsync = async (uid: string, ft: string, fid: string) => {
-		let f = feeds.find(a => a.feedType == ft && a.feedId == fid);
+		let f = feeds.find((a) => a.feedType == ft && a.feedId == fid);
 		if (f) {
 			let ok = confirm(`Remove feed: ${f.title}?`);
 			if (!ok) return;
 		}
 
 		try {
-			await $ax.post(`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`);
-		}
-		catch (error) {
+			await $ax.post(
+				`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`
+			);
+		} catch (error) {
 			console.error(error);
 		}
 
-		feeds = feeds.filter(f => f.feedId != fid);
+		feeds = feeds.filter((f) => f.feedId != fid);
 		dispatch("feed-count-total", feeds.length);
 		makeBatches();
 	};
@@ -138,33 +142,55 @@
 
 	// ** Reactives **
 
-	$: feedListTitle = (userInfo) ? ((userId == "public-user") ? "PUBLIC FEEDS" : `Feeds for ${userInfo.fullName}`) : "";
+	$: feedListTitle = userInfo
+		? userId == "public-user"
+			? "PUBLIC FEEDS"
+			: `Feeds for ${userInfo.fullName}`
+		: "";
 	$: addFeedAsync(feedToAdd);
 
 	$: refresh(userId);
-
 </script>
 
 <h1>{feedListTitle}</h1>
 
-	{#each feedBatches as fb}
-		<h2>{fb.feedType}</h2>
-		{#each fb.feeds as feed}
-			<div class="feed">
-				<div class="left">
-					<h3>{feed.title}</h3>
-					{#if feed.description && feed.description != feed.title}<div class="description">{feed.description}</div>{/if}
-					<a href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}" target="_blank" rel="noreferrer" id="inp-{feed.feedType}-{feed.feedId}" class="link">{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a>
-					<button class="small" data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button>
-				</div>
-				<div class="right">
-					{#if isEdit}<a href="/" on:click|preventDefault={() => removeFeedAsync(userId, feed.feedType, feed.feedId)} title="Remove feed"><i class="fa-solid fa-trash-can"></i></a>{/if}
-				</div>
+{#each feedBatches as fb}
+	<h2>{fb.feedType}</h2>
+	{#each fb.feeds as feed}
+		<div class="feed">
+			<div class="left">
+				<h3>{feed.title}</h3>
+				{#if feed.description && feed.description != feed.title}<div
+						class="description"
+					>
+						{feed.description}
+					</div>{/if}
+				<a
+					href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}"
+					target="_blank"
+					rel="noreferrer"
+					id="inp-{feed.feedType}-{feed.feedId}"
+					class="link"
+					>{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a
+				>
+				<button
+					class="small"
+					data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button
+				>
 			</div>
-		{/each}
+			<div class="right">
+				{#if isEdit}<a
+						href="/"
+						on:click|preventDefault={() =>
+							removeFeedAsync(userId, feed.feedType, feed.feedId)}
+						title="Remove feed"><i class="fa-solid fa-trash-can" /></a
+					>{/if}
+			</div>
+		</div>
 	{/each}
-
-
+{:else}
+	<h2>No Feeds</h2>
+{/each}
 
 <style lang="scss">
 	@import "../styles/_custom-variables.scss";
@@ -179,7 +205,7 @@
 
 	h2 {
 		display: block;
-		font-size: 1.0rem;
+		font-size: 1rem;
 		color: $body-text;
 		margin: 0.75rem 0 0.5rem;
 		border-bottom: 1px solid $body-text;
@@ -214,7 +240,7 @@
 
 		a {
 			display: block;
-			font-size: 1.0rem;
+			font-size: 1rem;
 			margin: 0 0 0.25rem;
 		}
 
@@ -235,5 +261,4 @@
 			}
 		}
 	}
-
 </style>

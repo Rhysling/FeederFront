@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Modal from "../components/Modal.svelte";
-	import { fade } from 'svelte/transition';
-  import { createEventDispatcher } from 'svelte';
+	import { fade } from "svelte/transition";
+	import { createEventDispatcher } from "svelte";
 
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
+	import { httpClient as ax } from "../stores/httpclient-store";
 
 	export let feedCountTotal: number | undefined = undefined;
 	export let feedCountLimit: number | undefined = undefined;
@@ -15,9 +15,9 @@
 	let isShowModal = false;
 
 	let sources = [
-		{ id: "tw", text: "Twitter" },
+		//{ id: "tw", text: "Twitter" },
 		{ id: "go", text: "Go Comics" },
-		{ id: "ma", text: "Mastodon" }
+		{ id: "ma", text: "Mastodon" },
 	];
 	let selectedSource = sources[0];
 
@@ -44,19 +44,19 @@
 		isLoading = true;
 
 		try {
-			const response: AxiosResponse<IFeed | null> = await $ax.get(`/api/LookupSource/?feedType=${selectedSource.id}&screenName=${screenName}`);
+			const response: AxiosResponse<IFeed | null> = await $ax.get(
+				`/api/LookupSource/?feedType=${selectedSource.id}&screenName=${screenName}`
+			);
 			isLoading = false;
 			return response.data;
-		}
-		catch (error) {
+		} catch (error) {
 			isLoading = false;
 			console.error(error);
 		}
 	};
 
-
 	let setState = (state: string) => {
-		switch(state) {
+		switch (state) {
 			case "initial":
 				screenName = "";
 				result = "";
@@ -96,7 +96,7 @@
 				isError = false;
 				isScreenNameError = false;
 				isEnabledSearch = false;
-				isEnabledAdd = ((feedCountTotal ?? 0) < (feedCountLimit ?? 0)); // true if space left
+				isEnabledAdd = (feedCountTotal ?? 0) < (feedCountLimit ?? 0); // true if space left
 				isEnabledCancel = true;
 				break;
 			case "notfound":
@@ -140,16 +140,13 @@
 		if (!screenName.trim()) {
 			screenName = "";
 			state = "initial";
-		}
-		else
-			state = "editing";
+		} else state = "editing";
 	};
 
 	let search = async () => {
 		screenName = screenName.trim();
 
-		if (screenName.startsWith("@"))
-			screenName = screenName.substring(1);
+		if (screenName.startsWith("@")) screenName = screenName.substring(1);
 
 		if (!screenName) {
 			state = "initial";
@@ -161,12 +158,10 @@
 		if (lookupFeed) {
 			result = "Found: " + lookupFeed.title;
 			state = "found";
-		}
-		else {
+		} else {
 			result = "Not Found: " + screenName;
 			state = "notfound";
 		}
-
 	};
 
 	let add = () => {
@@ -185,19 +180,16 @@
 		setTimeout(() => {
 			state = "initial";
 		}, 2500);
-
 	};
 
 	let cancel = () => {
 		state = "initial";
 		const sn = document.getElementById("screenname");
-		if (sn)
-			sn.focus();
+		if (sn) sn.focus();
 	};
 
 	$: setState(state);
 	$: setMessage(feedCountTotal, feedCountLimit);
-
 </script>
 
 <div class="add-feed">
@@ -206,45 +198,73 @@
 	<div class="add-type">
 		<select bind:value={selectedSource}>
 			{#each sources as s}
-			<option value={s}>
-				{s.text}
-			</option>
+				<option value={s}>
+					{s.text}
+				</option>
 			{/each}
 		</select>
 	</div>
 	<div class="add-screenname">
-		<input id="screenname" type="text" bind:value={screenName} on:keyup={() => setEditing()} placeholder="Screen name" class:is-error={isScreenNameError} style="width:100%; display:block;" />
+		<input
+			id="screenname"
+			type="text"
+			bind:value={screenName}
+			on:keyup={() => setEditing()}
+			placeholder="Screen name"
+			class:is-error={isScreenNameError}
+			style="width:100%; display:block;"
+		/>
 	</div>
 	<div class="add-subtext">
-		<a href="/" on:click|preventDefault={ () => isShowModal = true }>Hint</a>
+		<a href="/" on:click|preventDefault={() => (isShowModal = true)}>Hint</a>
 		- how to find screen names for {selectedSource.text}.
 	</div>
 	<div class="add-searchbtn">
-		<button on:click={() => search()}  disabled={!isEnabledSearch}>Search</button>
+		<button on:click={() => search()} disabled={!isEnabledSearch}>Search</button
+		>
 	</div>
 	<div class="add-result" class:is-success={isSuccess} class:is-error={isError}>
 		{result}
 		{#if showAddedResult}
-		<div out:fade="{{delay: 0, duration: 500}}">
-			{addedResult}
-		</div>
+			<div out:fade={{ delay: 0, duration: 500 }}>
+				{addedResult}
+			</div>
 		{/if}
 	</div>
 	<div class="add-resbtn">
-		<button class="narrow" on:click={() => add()} style="width:100%;" disabled={!isEnabledAdd}>Add Feed</button>
-		<button class="secondary narrow" on:click={() => cancel()} style="width:100%; margin:0;" disabled={!isEnabledCancel}>Cancel</button>
+		<button
+			class="narrow"
+			on:click={() => add()}
+			style="width:100%;"
+			disabled={!isEnabledAdd}>Add Feed</button
+		>
+		<button
+			class="secondary narrow"
+			on:click={() => cancel()}
+			style="width:100%; margin:0;"
+			disabled={!isEnabledCancel}>Cancel</button
+		>
 	</div>
 	<div class="cover" class:is-hidden={!isLoading}>
-		<i class="fa-solid fa-circle-notch fa-spin"></i>
+		<i class="fa-solid fa-circle-notch fa-spin" />
 	</div>
 </div>
-<Modal {isShowModal} on:hide-modal={() => isShowModal = false}>
+<Modal {isShowModal} on:hide-modal={() => (isShowModal = false)}>
 	{#if selectedSource.id == "go"}
-	<img src="/assets/img/hint-gocomics.png" alt="Hint to search for Go Comics feeds" />
+		<img
+			src="/assets/img/hint-gocomics.png"
+			alt="Hint to search for Go Comics feeds"
+		/>
 	{:else if selectedSource.id == "ma"}
-	<img src="/assets/img/hint-mastodon.png" alt="Hint to search for Mastodon feeds" />
+		<img
+			src="/assets/img/hint-mastodon.png"
+			alt="Hint to search for Mastodon feeds"
+		/>
 	{:else}
-	<img src="/assets/img/hint-twitter.png" alt="Hint to search for Twitter feeds" />
+		<img
+			src="/assets/img/hint-twitter.png"
+			alt="Hint to search for Twitter feeds"
+		/>
 	{/if}
 </Modal>
 
@@ -304,14 +324,14 @@
 		padding: 0.5rem 0.5rem 0;
 		font-size: 0.9rem;
 		display: flex;
-    align-items: baseline;
+		align-items: baseline;
 	}
 	.add-screenname {
 		grid-area: screenname;
 		padding: 0.5rem 0.5rem 0;
 		display: flex;
 		justify-content: center;
-    align-items: baseline;
+		align-items: baseline;
 
 		input {
 			margin: 0;
@@ -324,7 +344,7 @@
 		font-size: 0.9rem;
 		display: flex;
 		justify-content: right;
-    align-items: baseline;
+		align-items: baseline;
 	}
 	.add-result {
 		grid-area: result;
@@ -333,7 +353,7 @@
 		border-radius: 3px;
 		display: flex;
 		justify-content: left;
-    align-items: baseline;
+		align-items: baseline;
 	}
 
 	.add-resbtn {
@@ -363,10 +383,6 @@
 		border: 1px solid $color-error;
 	}
 
-
 	@media screen and (max-width: $bp-small) {
-
-
 	}
-
 </style>

@@ -3,40 +3,41 @@
 	import AddFeed from "../components/AddFeed.svelte";
 	import FeedList from "../components/FeedList.svelte";
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
+	import { httpClient as ax } from "../stores/httpclient-store";
 
 	let userList: IUserInfo[] = [];
 	let currentUser: IUserInfo | undefined;
-  
+
 	let feedCountTotal: number | undefined = undefined;
 	let feedCountLimit: number | undefined = undefined;
 	let feedToAdd: IFeed | null | undefined = null;
 
-	const setFeedCountTotal = (e: CustomEvent<number>) => feedCountTotal = e.detail;
-	const setFeedCountLimit = (e: CustomEvent<number>) => feedCountLimit = e.detail;
-	const addFeed = (e: CustomEvent<IFeed>) => feedToAdd = e.detail;
-  
+	const setFeedCountTotal = (e: CustomEvent<number>) =>
+		(feedCountTotal = e.detail);
+	const setFeedCountLimit = (e: CustomEvent<number>) =>
+		(feedCountLimit = e.detail);
+	const addFeed = (e: CustomEvent<IFeed>) => (feedToAdd = e.detail);
+
 	const loadUsers = async () => {
 		try {
-			const response: AxiosResponse<IUserInfo[]> = await $ax.get("/api/User/GetAllUsers");
-				userList = response.data;
+			const response: AxiosResponse<IUserInfo[]> = await $ax.get(
+				"/api/User/GetAllUsers"
+			);
+			userList = response.data;
 
-				if (userList && userList.length)
-					currentUser = userList[0];
-		}
-		catch (error) {
+			if (userList && userList.length) currentUser = userList[0];
+		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	loadUsers();
-
 </script>
 
 <Container>
 	<h1>Admin User Feeds</h1>
 	<div class="user-select">
-		<select bind:value={currentUser} on:change="{() => { }}">
+		<select bind:value={currentUser} on:change={() => {}}>
 			{#each userList as u}
 				<option value={u}>
 					{u.fullName}
@@ -48,11 +49,7 @@
 		</div>
 	</div>
 
-	<AddFeed
-		{feedCountTotal}
-		{feedCountLimit}
-		on:add-feed={addFeed}
-	/>
+	<AddFeed {feedCountTotal} {feedCountLimit} on:add-feed={addFeed} />
 	<FeedList
 		userId={currentUser?.userId || undefined}
 		{feedToAdd}
@@ -78,7 +75,6 @@
 
 		select {
 			flex: 1 1 auto;
-
 		}
 
 		div {
@@ -88,8 +84,5 @@
 	}
 
 	@media screen and (max-width: $bp-small) {
-		
-
 	}
-
 </style>
