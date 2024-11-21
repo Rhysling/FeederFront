@@ -21,10 +21,13 @@
 	let feedListTitle = "";
 	let burl = getBaseURL();
 
+	// Clean Id name for Copy Link button target
+	const cleanName = (id: string) => id.replace(/\W/g, "");
+
 	const getFeedsAsync = async (uid: string) => {
 		try {
 			const response: AxiosResponse<IFeed[]> = await $ax.get(
-				`/api/User/GetFeedsForUser/${uid}`
+				`/api/User/GetFeedsForUser/${uid}`,
 			);
 			return response.data;
 		} catch (error) {
@@ -35,7 +38,7 @@
 	const getUserInfoAsync = async (uid: string) => {
 		try {
 			const response: AxiosResponse<IUserInfo> = await $ax.get(
-				`/api/User/GetUserInfo/${uid}`
+				`/api/User/GetUserInfo/${uid}`,
 			);
 			return response.data;
 		} catch (error) {
@@ -68,6 +71,15 @@
 			feedBatches.push({
 				feedType: "Twitter",
 				feeds: ft,
+			});
+		}
+
+		const fb = feeds.filter((f) => f.feedType == "bs").sort(sortFn);
+
+		if (fb.length) {
+			feedBatches.push({
+				feedType: "Bluesky",
+				feeds: fb,
 			});
 		}
 
@@ -116,7 +128,7 @@
 
 		try {
 			await $ax.post(
-				`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`
+				`/api/User/RemoveFeed?userid=${uid}&feedType=${ft}&feedId=${fid}`,
 			);
 		} catch (error) {
 			console.error(error);
@@ -169,13 +181,14 @@
 					href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}"
 					target="_blank"
 					rel="noreferrer"
-					id="inp-{feed.feedType}-{feed.feedId}"
+					id="inp-{feed.feedType}-{cleanName(feed.feedId)}"
 					class="link"
 					>{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a
 				>
 				<button
 					class="small"
-					data-copytarget="#inp-{feed.feedType}-{feed.feedId}">Copy Link</button
+					data-copytarget="#inp-{feed.feedType}-{cleanName(feed.feedId)}"
+					>Copy Link</button
 				>
 			</div>
 			<div class="right">

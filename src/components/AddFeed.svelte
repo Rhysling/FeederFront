@@ -16,6 +16,7 @@
 
 	let sources = [
 		//{ id: "tw", text: "Twitter" },
+		{ id: "bs", text: "Bluesky" },
 		{ id: "go", text: "Go Comics" },
 		{ id: "ma", text: "Mastodon" },
 	];
@@ -45,7 +46,7 @@
 
 		try {
 			const response: AxiosResponse<IFeed | null> = await $ax.get(
-				`/api/LookupSource/?feedType=${selectedSource.id}&screenName=${screenName}`
+				`/api/LookupSource/?feedType=${selectedSource.id}&screenName=${screenName}`,
 			);
 			isLoading = false;
 			return response.data;
@@ -259,6 +260,11 @@
 		<img
 			src="/assets/img/hint-mastodon.png"
 			alt="Hint to search for Mastodon feeds"
+		/>
+	{:else if selectedSource.id == "bs"}
+		<img
+			src="/assets/img/hint-bluesky.png"
+			alt="Hint to search for Bluesky feeds"
 		/>
 	{:else}
 		<img
