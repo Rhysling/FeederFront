@@ -6,36 +6,38 @@ let getBaseRoutes = (): Route => {
 	return {
 		title: "Home",
 		page: "Home",
-		slug: "/",
+		path: "/",
 		children: [
 			{
 				title: "My Feeds",
 				page: "MyFeeds",
-				slug: "/my-feeds",
+				path: "/my-feeds",
 				children: []
 			},
 			{
 				title: "Account",
 				page: "Account",
-				slug: "/account",
+				path: "/account",
 				children: []
 			},
 			{
 				title: "Privacy Policy",
 				page: "PrivacyPolicy",
-				slug: "/privacy-policy",
+				path: "/privacy-policy",
+				isHidden: true,
 				children: []
 			},
 			{
 				title: "Terms of Service",
 				page: "TermsOfService",
-				slug: "/terms-of-service",
+				path: "/terms-of-service",
+				isHidden: true,
 				children: []
 			},
 			{
 				title: "Admin",
 				page: "Admin",
-				slug: "/admin",
+				path: "/admin",
 				isAdmin: true,
 				isExpanded: undefined,
 				children: [
@@ -43,28 +45,36 @@ let getBaseRoutes = (): Route => {
 						title: "User Feeds Admin",
 						navName: "UserFeeds",
 						page: "AdminUserFeeds",
-						slug: "/admin-user-feeds",
+						path: "/admin-user-feeds",
 						isAdmin: true
 					},
 					{
 						title: "Feeds Admin",
 						navName: "Feeds",
 						page: "AdminFeeds",
-						slug: "/admin-feeds",
+						path: "/admin-feeds",
 						isAdmin: true
 					},
 					{
 						title: "User Admin",
 						navName: "Users",
 						page: "AdminUsers",
-						slug: "/admin-users",
+						path: "/admin-users",
+						isAdmin: true
+					},
+					{
+						title: "Demonstration Page",
+						navName: "Demo",
+						page: "AdminDemo",
+						path: "/admin-demo",
+						isHidden: false,
 						isAdmin: true
 					},
 					{
 						title: "Log",
 						navName: "Log",
 						page: "AdminLog",
-						slug: "/admin-log",
+						path: "/admin-log",
 						isAdmin: true
 					}
 				]
@@ -73,7 +83,7 @@ let getBaseRoutes = (): Route => {
 	};
 };
 
-function filterAdminRoutes (node: Route) {
+function filterAdminRoutes(node: Route) {
 	if (node.children)
 		node.children = node.children.filter(a => a.isAdmin !== true).map(a => filterAdminRoutes(a));
 
@@ -82,12 +92,12 @@ function filterAdminRoutes (node: Route) {
 
 
 
-function findRoute(routeRoot: Route, slug: string): Route | undefined {
+function findRoute(routeRoot: Route, path: string): Route | undefined {
 	let cr: Route | undefined;
 
 	function traverse(node: Route): Route | undefined {
 
-		if (node.slug === slug)
+		if (node.path === path)
 			return node;
 
 		let cr: Route | undefined;
@@ -118,14 +128,14 @@ export const routes = derived(user, ($user) => {
 	return r;
 });
 
-export const currentSlug = writable("/");
+export const currentPath = writable("/");
 export const currentParams = writable<any>({});
 
-export const currentRoute = derived([routes, currentSlug], ([$routes, $currentSlug]) => {
-	let r = findRoute($routes, $currentSlug);
+export const currentRoute = derived([routes, currentPath], ([$routes, $currentPath]) => {
+	let r = findRoute($routes, $currentPath);
 	if (r) return r;
 
-	$currentSlug = "/";
+	$currentPath = "/";
 	return $routes;
 });
 
@@ -134,8 +144,8 @@ export const currentRoute = derived([routes, currentSlug], ([$routes, $currentSl
 let paramStringToObj = (inp: string) => {
 	let entries = (new URLSearchParams(inp)).entries();
 	let p: any = {};
-	for(let [key, val] of entries) { 
-		p[key] = val; 
+	for (let [key, val] of entries) {
+		p[key] = val;
 	}
 	return p;
 };
@@ -148,8 +158,8 @@ let objToParamString = (inp: any) => {
 	if (!entries.length) return "";
 
 	let p = new URLSearchParams();
-	for(let [key, val] of entries)
-		p.append(key, <string>val); 
+	for (let [key, val] of entries)
+		p.append(key, <string>val);
 
 	return "?" + p.toString();
 };
@@ -160,10 +170,10 @@ export const navFromUrl = function () {
 	let pathName = window.location.pathname;
 	let r = findRoute(get(routes), pathName);
 
-	let p= paramStringToObj(window.location.search);
+	let p = paramStringToObj(window.location.search);
 
 	if (r) {
-		currentSlug.set(pathName);
+		currentPath.set(pathName);
 		currentParams.set(p);
 		document.title = `TwitFeeder-${r.title}`;
 	} else {
@@ -181,7 +191,7 @@ export const navTo = function (e: MouseEvent | null, path: string, params?: any)
 		url += objToParamString(params);
 
 	window.history.pushState({}, path, url);
-	currentSlug.set(path);
+	currentPath.set(path);
 	currentParams.set(params || {});
 
 	let r = findRoute(get(routes), path);
@@ -195,7 +205,7 @@ window.onpopstate = () => {
 	let r = findRoute(get(routes), pathName);
 
 	if (r) {
-		currentSlug.set(pathName);
+		currentPath.set(pathName);
 	} else {
 		window.location.replace(window.location.origin);
 	}

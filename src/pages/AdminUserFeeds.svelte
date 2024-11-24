@@ -21,7 +21,7 @@
 	const loadUsers = async () => {
 		try {
 			const response: AxiosResponse<IUserInfo[]> = await $ax.get(
-				"/api/User/GetAllUsers"
+				"/api/User/GetAllUsers",
 			);
 			userList = response.data;
 
@@ -60,12 +60,12 @@
 </Container>
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
 
 	h1 {
 		text-align: center;
 		padding-bottom: 0.5rem;
-		border-bottom: 1px solid $body-text;
+		border-bottom: 1px solid c.$body-text;
 	}
 
 	.user-select {
@@ -83,6 +83,6 @@
 		}
 	}
 
-	@media screen and (max-width: $bp-small) {
+	@media screen and (max-width: c.$bp-small) {
 	}
 </style>

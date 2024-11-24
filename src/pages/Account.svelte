@@ -1,17 +1,18 @@
 <script lang="ts">
 	import Container from "../components/Container.svelte";
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
-  import { user } from "../stores/user-store.js";
-  
+	import { httpClient as ax } from "../stores/httpclient-store";
+	import { user } from "../stores/user-store.js";
+
 	let ui: IUserInfo | undefined;
 
 	const getUserInfo = async () => {
 		try {
-			const response: AxiosResponse<IUserInfo> = await $ax.get(`/api/User/GetUserInfo/${$user.userId}`);
+			const response: AxiosResponse<IUserInfo> = await $ax.get(
+				`/api/User/GetUserInfo/${$user.userId}`,
+			);
 			ui = response.data;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 		}
 	};
@@ -24,7 +25,6 @@
 	};
 
 	getUserInfo();
-
 </script>
 
 <Container>
@@ -44,7 +44,7 @@
 	</div>
 	<div class="info">
 		<div class="title">Login Source</div>
-		<div class="content">{ loginProvider($user.userId) }</div>
+		<div class="content">{loginProvider($user.userId)}</div>
 	</div>
 	<div class="info">
 		<div class="title">Last Login</div>
@@ -53,7 +53,7 @@
 	<div class="info">
 		<div class="title">Feed Count</div>
 		<div class="content">
-			{#each (ui?.feedCounts || []) as fc }
+			{#each ui?.feedCounts || [] as fc}
 				<div>{fc.key} - {fc.value}</div>
 			{:else}
 				None
@@ -63,7 +63,7 @@
 </Container>
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
 
 	h1 {
 		font-size: 1.2rem;
@@ -73,22 +73,18 @@
 
 	.info {
 		margin: 0.5rem 0 0 0;
-		border-bottom: 1px solid $gray-light;
+		border-bottom: 1px solid c.$gray-light;
 
 		.title {
-			color: $main-color;
+			color: c.$main-color;
 			font-weight: bold;
 		}
 
 		.content {
 			padding: 0 0 1rem 1rem;
 		}
-
 	}
 
-	@media screen and (max-width: $bp-small) {
-		
-
+	@media screen and (max-width: c.$bp-small) {
 	}
-
 </style>

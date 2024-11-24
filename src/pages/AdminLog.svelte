@@ -1,22 +1,26 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy } from "svelte";
 	import Container from "../components/Container.svelte";
 
 	import type { AxiosResponse } from "axios";
-  import { httpClient as ax } from "../stores/httpclient-store";
+	import { httpClient as ax } from "../stores/httpclient-store";
 	import flatpickr from "flatpickr";
-	import type { Instance } from 'flatpickr/dist/types/instance';
+	import type { Instance } from "flatpickr/dist/types/instance";
 
 	let logItems: ILogItemOut[] = [];
 
 	let fp: Instance;
 	let now = new Date();
-	let utcNow = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+	let utcNow = new Date(
+		now.getUTCFullYear(),
+		now.getUTCMonth(),
+		now.getUTCDate(),
+	);
 
 	const levels = [
 		{ id: 1, text: "Info" },
 		{ id: 2, text: "Warn" },
-		{ id: 3, text: "Error" }
+		{ id: 3, text: "Error" },
 	];
 	let selectedLevel = 1;
 
@@ -24,23 +28,23 @@
 		{ id: 50, text: "50" },
 		{ id: 100, text: "100" },
 		{ id: 200, text: "200" },
-		{ id: 999, text: "ForDate" }
+		{ id: 999, text: "ForDate" },
 	];
 	let selectedTake = 50;
 
-  
 	const getLogItems = async () => {
 		try {
-			const response: AxiosResponse<ILogItemOut[]> = await $ax.get(`/api/Log/GetItems?asOfDate=${fp.selectedDates[0].toJSON()}&takeCount=${selectedTake}`);
+			const response: AxiosResponse<ILogItemOut[]> = await $ax.get(
+				`/api/Log/GetItems?asOfDate=${fp.selectedDates[0].toJSON()}&takeCount=${selectedTake}`,
+			);
 			logItems = response.data;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const toggleDetail = (id: string) => {
-		let ix = logItems.findIndex(a => a._id === id);
+		let ix = logItems.findIndex((a) => a._id === id);
 		if (ix > -1) {
 			logItems[ix].showDetail = !logItems[ix].showDetail;
 		}
@@ -50,19 +54,23 @@
 		if (!logItems.length) return;
 
 		let isOpen = !logItems[0].showDetail;
-		logItems = logItems.map(a => {a.showDetail = isOpen; return a;});
+		logItems = logItems.map((a) => {
+			a.showDetail = isOpen;
+			return a;
+		});
 	};
 
-	
-
 	onMount(() => {
-		fp = <Instance>flatpickr("#fp", { altInput: true, static: true, defaultDate: utcNow });
+		fp = flatpickr("#fp", {
+			altInput: true,
+			static: true,
+			defaultDate: utcNow,
+		}) as Instance;
 	});
 
 	onDestroy(() => {
 		fp.destroy();
 	});
-
 </script>
 
 <Container>
@@ -77,7 +85,8 @@
 		</div>
 	</div>
 	<div class="bar">
-		<div>As of:
+		<div>
+			As of:
 			<input id="fp" type="text" placeholder="Select Date.." readonly />
 		</div>
 		<div>&#9679;</div>
@@ -85,14 +94,22 @@
 			Take:
 			<select bind:value={selectedTake} style="width:5rem;">
 				{#each takeList as take}
-				<option value={take.id} selected={(take.id == selectedTake) ? true : undefined}>{take.text}</option>
+					<option
+						value={take.id}
+						selected={take.id == selectedTake ? true : undefined}
+						>{take.text}</option
+					>
 				{/each}
 			</select>
 		</div>
 		<div>
 			<select bind:value={selectedLevel} style="width:4rem;">
 				{#each levels as level}
-				<option value={level.id} selected={(level.id == selectedLevel) ? true : undefined}>{level.text}</option>
+					<option
+						value={level.id}
+						selected={level.id == selectedLevel ? true : undefined}
+						>{level.text}</option
+					>
 				{/each}
 			</select>
 		</div>
@@ -105,29 +122,37 @@
 		<div class="head">Level</div>
 		<div class="head">Message</div>
 		{#each logItems as item}
-			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.eventDatePT}</div>
-			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>{item.levelName}</div>
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>
+				{item.eventDatePT}
+			</div>
+			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>
+				{item.levelName}
+			</div>
 			<div class:error={item.levelId == 3} class:warning={item.levelId == 2}>
 				{#if item.infoObjDisplay && item.infoObjDisplay.trim()}
-				<a href="/" on:click|preventDefault={() => toggleDetail(item._id) }>{item.message}</a>
+					<a href="/" on:click|preventDefault={() => toggleDetail(item._id)}
+						>{item.message}</a
+					>
 				{:else}
-				{item.message}
+					{item.message}
 				{/if}
 			</div>
-			<div class="detail" class:show={item.showDetail ? true : undefined}>{item.infoObjDisplay}</div>
+			<div class="detail" class:show={item.showDetail ? true : undefined}>
+				{item.infoObjDisplay}
+			</div>
 		{/each}
 	</div>
 </Container>
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
 
 	h1 {
 		font-size: 1.3rem;
 		text-align: center;
 		margin: 0 0 0.5rem 0;
 		padding: 0.5rem 0;
-		border-bottom: 1px solid $gray-light;
+		border-bottom: 1px solid c.$gray-light;
 	}
 
 	.top {
@@ -139,7 +164,7 @@
 
 		.now {
 			font-size: 1.1rem;
-			color: $dark-text;
+			color: c.$dark-text;
 			padding: 0.5rem 0.5rem 0;
 		}
 		.toggle {
@@ -147,13 +172,11 @@
 		}
 	}
 
-	
-
 	.bar {
 		display: flex;
 		justify-content: space-between;
 		align-items: baseline;
-		background-color: $blue-background;
+		background-color: c.$blue-background;
 		border: 2px solid black;
 		margin: 1rem 0;
 		padding: 0.5rem;
@@ -169,19 +192,19 @@
 		grid-template-columns: 20fr 8fr 60fr;
 		font-size: 0.8rem;
 		margin-top: 1rem;
-		border: 1px solid $dark-text;
+		border: 1px solid c.$dark-text;
 
 		> div {
 			line-height: 1.1;
 			padding: 0.1rem;
-			border-bottom: 1px solid $gray-lighter;
+			border-bottom: 1px solid c.$gray-lighter;
 		}
 
 		.head {
 			font-size: 0.8rem;
 			font-weight: bold;
-			color: $main-color;
-			border-bottom: 1px solid $dark-text;
+			color: c.$main-color;
+			border-bottom: 1px solid c.$dark-text;
 		}
 
 		.detail {
@@ -192,9 +215,11 @@
 			transition: max-height 0.25s ease-out;
 			visibility: hidden;
 			opacity: 0;
-			transition: visibility 0s, opacity 0.5s linear;
+			transition:
+				visibility 0s,
+				opacity 0.5s linear;
 			overflow: hidden;
-			background: $gray-lighter;
+			background: c.$gray-lighter;
 
 			&.show {
 				max-height: 500px;
@@ -206,19 +231,16 @@
 		}
 
 		.error {
-			color: $color-error;
-			background-color: $color-error-bg;
+			color: c.$color-error;
+			background-color: c.$color-error-bg;
 		}
 
 		.warning {
-			color: $color-warning;
-			background-color: $color-warning-bg;
+			color: c.$color-warning;
+			background-color: c.$color-warning-bg;
 		}
 	}
 
-	@media screen and (max-width: $bp-small) {
-		
-
+	@media screen and (max-width: c.$bp-small) {
 	}
-
 </style>

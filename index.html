@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset='utf-8'>
-	<meta name='viewport' content='width=device-width,initial-scale=1'>
-	<meta name="google-signin-client_id" content="1000133160969-k2og47cvk5qhm0ue9jjntoo035dg4ul6.apps.googleusercontent.com">
 
-	<title>Botanica</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="google-signin-client_id"
+		content="1000133160969-k2og47cvk5qhm0ue9jjntoo035dg4ul6.apps.googleusercontent.com">
+
+	<title>TwitFeeder</title>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -21,12 +23,14 @@
 
 	<script>
 		var baseURL = "https://localhost:7134";
-		var app_isProduction = false;
+		var appIsProduction = false;
+		var appVersionKey = "  placeholder";
 	</script>
-
-	<script defer src='/build/bundle.js'></script>
 </head>
 
 <body>
+	<div id="app"></div>
+	<script type="module" src="/src/main.ts"></script>
 </body>
+
 </html>

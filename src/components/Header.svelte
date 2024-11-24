@@ -1,225 +1,274 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
-  import { slide } from 'svelte/transition';
-  import { onMount } from 'svelte';
+	import { slide } from "svelte/transition";
+	import { onMount } from "svelte";
 
-  import { user } from "../stores/user-store";
-  import { httpClient as ax } from "../stores/httpclient-store";
-  import type { AxiosResponse } from "axios";
-  import { currentSlug, navTo } from "../stores/route-store.js";
+	import { user } from "../stores/user-store";
+	import { httpClient as ax } from "../stores/httpclient-store";
+	import type { AxiosResponse } from "axios";
+	import { currentPath, navTo, routes } from "../stores/route-store";
 
-  let showAdmin = false;
+	let showAdmin = $state(false);
+	let isAdmin = $derived($user.isAdmin);
 
-  
+	// let topNav = $derived.by(() => {
+	// 	let r = $routes.children?.filter(
+	// 		(a) => !a.isHidden && (isAdmin || a.isAdmin == isAdmin),
+	// 	);
+	// 	console.log({ r });
+	// 	return r || [];
+	// });
+
+	let adminNav = $derived.by(() => {
+		let p = $routes.children?.find((a) => a.page == "Admin");
+		if (!p) return [];
+
+		let r = p.children?.filter((a) => !a.isHidden && a.isAdmin == isAdmin);
+
+		console.log({ r });
+		return r || [];
+	});
+
 	onMount(async () => {
 		await user.initAuth0Async();
 
-    if ($user.isAuthenticated) {
-      window.history.replaceState({}, document.title, window.location.pathname);
+		if ($user.isAuthenticated) {
+			window.history.replaceState({}, document.title, window.location.pathname);
 
-      return;
-    }
+			return;
+		}
 
-    const query = window.location.search;
-    const shouldParseResult = query.includes("code=") && query.includes("state=");
+		const query = window.location.search;
+		const shouldParseResult =
+			query.includes("code=") && query.includes("state=");
 
-    if (shouldParseResult) {
-      try {
-        await user.handleRedirectCallbackAsync();
+		if (shouldParseResult) {
+			try {
+				await user.handleRedirectCallbackAsync();
 
-        let isAuth = await user.getIsAuthenticatedAsync();
+				let isAuth = await user.getIsAuthenticatedAsync();
 
-        if (isAuth) {
-          await user.getIdTokenClaimsAsync();
-          await user.getAuthTokenAsync();
-          try {
-            const response: AxiosResponse<IUserInfo> = await $ax.post("/api/User/Login", $user);
-            let ui = response.data;
+				if (isAuth) {
+					await user.getIdTokenClaimsAsync();
+					await user.getAuthTokenAsync();
+					try {
+						const response: AxiosResponse<IUserInfo> = await $ax.post(
+							"/api/User/Login",
+							$user,
+						);
+						let ui = response.data;
 
-            if (ui.isDisabled) {
-              // Log this guy back out.
-              alert("This account is disabled.");
-              user.logout();
-              return;
-            }
-            
-            $user.subscriptionKey = ui.subscriptionKey ?? "";
-          }
-          catch (error) {
-            console.error(error);
-          }
+						if (ui.isDisabled) {
+							// Log this guy back out.
+							alert("This account is disabled.");
+							user.logout();
+							return;
+						}
 
-        }
-        else {
-          console.error("FAILED login on redirect!");
-        }
+						$user.subscriptionKey = ui.subscriptionKey ?? "";
+					} catch (error) {
+						console.error(error);
+					}
+				} else {
+					console.error("FAILED login on redirect!");
+				}
 
-        $user.isAuthenticated = isAuth;
+				$user.isAuthenticated = isAuth;
+			} catch (err) {
+				console.error("Error parsing redirect:", err);
+			}
 
-      } catch (err) {
-        console.error("Error parsing redirect:", err);
-      }
-
-      window.history.replaceState({}, document.title, "/");
-    }
-
-    
-    
+			window.history.replaceState({}, document.title, "/");
+		}
 	});
-
 </script>
 
-<div class="ap-menu">
-  {#if !showAdmin}
-    <div transition:slide class="ap-menu-main">
-      <div class="ap-menu-heading">
-        <a
-          href="/"
-          on:click={(e) => navTo(e, "/")}
-          class:selected={("/" === $currentSlug) ? true : undefined}>Twit Feeder</a>
-      </div>
-      <a
-        class="ap-menu-logo" href="/"
-        on:click={(e) => navTo(e, "/")}
-        class:selected={("/" === $currentSlug) ? true : undefined}><img src="/assets/img/logo-twitfeeder-400x400.png" alt="TwitFeeder" title="Twitter and other feeds sent to your RSS reader" /></a>
-      {#if $user.isAuthenticated}
-        <div class="ap-menu-text">{$user.fullName}</div>
-      {/if}
-      <div class="ap-menu-sep">&nbsp;</div>
+{#snippet menuItem(route: Route)}
+	<a
+		href={route.path}
+		onclick={(e) => navTo(e, route.path)}
+		class:selected={route.path === $currentPath ? true : undefined}
+		>{route.navName || route.title}</a
+	>
+{/snippet}
 
-      {#if $user.isAuthenticated}
-        <a
-          href="/my-feeds"
-          on:click={(e) => navTo(e, "/my-feeds")}
-          class:selected={("/my-feeds" === $currentSlug) ? true : undefined}>My Feeds</a>
-        <a
-          href="/account"
-          on:click={(e) => navTo(e, "/account")}
-          class:selected={("/account" === $currentSlug) ? true : undefined}>Account</a>
-        {#if $user.isAdmin}<a href="/" on:click|preventDefault={ () => {showAdmin = !showAdmin; navTo(null, "/admin-users") }}>Admin</a>{/if}
-        <a href="/" on:click|preventDefault={ () => user.logout() }>Sign Out</a>
-      {:else}
-        <a href="/" on:click|preventDefault={ async () => await user.loginAsync(null) }>Sign In/Sign Up</a>
-      {/if}
-    </div>
-  {:else}
-    <div transition:slide class="ap-menu-admin">
-      <a href="/" on:click={(e) => {e.preventDefault(); showAdmin = !showAdmin; }}>&lt; Back</a>
-      <div class="ap-menu-sep">&nbsp;</div>
-      <a
-        href="/admin-user-feeds"
-        on:click={(e) => navTo(e, "/admin-user-feeds")}
-        class:selected={("/admin-user-feeds" === $currentSlug) ? true : undefined}>UserFeeds</a>
-      <a
-        href="/admin-feeds"
-        on:click={(e) => navTo(e, "/admin-feeds")}
-        class:selected={("/admin-feeds" === $currentSlug) ? true : undefined}>Feeds</a>
-      <a
-        href="/admin-users"
-        on:click={(e) => navTo(e, "/admin-users")}
-        class:selected={("/admin-users" === $currentSlug) ? true : undefined}>Users</a>
-      <a
-        href="/admin-log"
-        on:click={(e) => navTo(e, "/admin-log")}
-        class:selected={("/admin-log" === $currentSlug) ? true : undefined}>Log</a>
-    </div>
-  {/if}
+<div class="ap-menu">
+	{#if !showAdmin}
+		<div transition:slide class="ap-menu-main">
+			<div class="ap-menu-heading">
+				<a
+					href="/"
+					onclick={(e) => navTo(e, "/")}
+					class:selected={"/" === $currentPath ? true : undefined}
+					>Twit Feeder</a
+				>
+			</div>
+			<a
+				class="ap-menu-logo"
+				href="/"
+				onclick={(e) => navTo(e, "/")}
+				class:selected={"/" === $currentPath ? true : undefined}
+				><img
+					src="/assets/img/logo-twitfeeder-400x400.png"
+					alt="TwitFeeder"
+					title="Twitter and other feeds sent to your RSS reader"
+				/></a
+			>
+			{#if $user.isAuthenticated}
+				<div class="ap-menu-text">{$user.fullName}</div>
+			{/if}
+			<div class="ap-menu-sep">&nbsp;</div>
+
+			{#if $user.isAuthenticated}
+				<a
+					href="/my-feeds"
+					onclick={(e) => navTo(e, "/my-feeds")}
+					class:selected={"/my-feeds" === $currentPath ? true : undefined}
+					>My Feeds</a
+				>
+				<a
+					href="/account"
+					onclick={(e) => navTo(e, "/account")}
+					class:selected={"/account" === $currentPath ? true : undefined}
+					>Account</a
+				>
+				{#if $user.isAdmin}<a
+						href="/"
+						onclick={(e: MouseEvent) => {
+							e.preventDefault();
+							showAdmin = !showAdmin;
+							navTo(null, "/admin-users");
+						}}>Admin</a
+					>
+				{/if}
+				<a
+					href="/"
+					onclick={(e: MouseEvent) => {
+						e.preventDefault();
+						user.logout();
+					}}>Sign Out</a
+				>
+			{:else}
+				<a
+					href="/"
+					onclick={async (e: MouseEvent) => {
+						e.preventDefault();
+						await user.loginAsync(null);
+					}}>Sign In/Sign Up</a
+				>
+			{/if}
+		</div>
+	{:else}
+		<div transition:slide class="ap-menu-admin">
+			<a
+				href="/"
+				onclick={(e) => {
+					e.preventDefault();
+					showAdmin = !showAdmin;
+				}}>&lt; Back</a
+			>
+			<div class="ap-menu-sep">&nbsp;</div>
+			{#each adminNav as n}
+				{@render menuItem(n)}
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
-  @import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
+	@use "sass:color";
 
-  .ap-menu {
-    width: 100%;
-    position: fixed;
-    top: 0;
+	.ap-menu {
+		width: 100%;
+		position: fixed;
+		top: 0;
 		left: 0;
-    z-index: 4;
-  }
-  .ap-menu-main, .ap-menu-admin {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: baseline;
-    background: $dark-background;
+		z-index: 4;
+	}
+	.ap-menu-main,
+	.ap-menu-admin {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: baseline;
+		background: c.$dark-background;
 
-    > div, a {
-      padding: 0.5rem 0.75rem;
-    }
-  }
+		> div,
+		a {
+			padding: 0.5rem 0.75rem;
+		}
+	}
 
-  .ap-menu-main {
-    .ap-menu-logo {
-      display: none;
-    }
-  }
+	.ap-menu-main {
+		.ap-menu-logo {
+			display: none;
+		}
+	}
 
-  a {
-    color: lighten($link-color, 25%);
-    display: block;
-    text-decoration: none;
-    white-space: nowrap;
+	a {
+		color: color.adjust(c.$link-color, $lightness: 25%);
+		display: block;
+		text-decoration: none;
+		white-space: nowrap;
 
-    &.selected {
-      font-weight: bold;
-      cursor: default;
-    }
+		&.selected {
+			color: color.adjust(c.$link-color, $lightness: 50%);
+			font-weight: bold;
+			cursor: default;
+		}
 
-    &:visited {
-      color: lighten($link-color, 25%);
-    }
+		&:hover,
+		&:focus {
+			background: none;
+			border: none;
+			color: color.adjust(c.$link-color, $lightness: 45%);
+			text-decoration: none;
+		}
+	}
 
-    &:hover,
-    &:focus {
-      background: none;
-      border: none;
-      color: lighten($link-color, 45%);
-      text-decoration: none;
-    }
-  }
+	.ap-menu-heading {
+		color: white;
+		font-weight: 400;
+		font-size: 120%;
+		text-transform: uppercase;
+	}
 
-  .ap-menu-heading {
-    color: white;
-    font-weight: 400;
-    font-size: 120%;
-    text-transform: uppercase;
-  }
+	.ap-menu-sep {
+		flex: 1 1 auto;
+	}
 
-  .ap-menu-sep {
-    flex: 1 1 auto;
-  }
+	.ap-menu-text {
+		top: 2px;
+		font-size: 90%;
+		color: c.$light-text;
+	}
 
-  .ap-menu-text {
-    top: 2px;
-    font-size: 90%;
-    color: $light-text;
-  }
+	@media screen and (max-width: c.$bp-small) {
+		.ap-menu {
+			position: static;
+		}
 
+		.ap-menu-heading {
+			display: none;
+		}
 
-  @media screen and (max-width: $bp-small) {
+		.ap-menu-main {
+			align-items: center;
 
-    .ap-menu {
-      position: static;
-    }
+			.ap-menu-logo {
+				display: block;
 
-    .ap-menu-heading {
-      display: none;
-    }
+				img {
+					max-width: 25px;
+					margin-top: 0.3rem;
+				}
+			}
 
-    .ap-menu-main {
-      align-items: center;
-
-      .ap-menu-logo {
-        display: block;
-
-        img {
-          max-width: 25px;
-          margin-top: 0.3rem;
-        }
-      }
-
-      > div, a {
-        padding: 0.25rem 0.5rem;
-      }
-    }
-  }
-
+			> div,
+			a {
+				padding: 0.25rem 0.5rem;
+			}
+		}
+	}
 </style>

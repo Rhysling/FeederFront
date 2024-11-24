@@ -1,4 +1,5 @@
-@import "_custom-variables.scss";
+@use "custom-variables" as c;
+@use "sass:color";
 
 a.button,
 button {
@@ -10,28 +11,28 @@ button {
 	text-align: center;
 	cursor: pointer;
 	user-select: none;
-	outline: 1px solid $dark-background;
+	outline: 1px solid c.$dark-background;
 
-	color: $body-background;
-	background-color: $main-color;
+	color: c.$body-background;
+	background-color: c.$main-color;
 	border-radius: 5px;
 	border: transparent;
 	padding: 0.5em 2em;
 
 	&:not(:disabled):hover,
 	&:not(:disabled):focus {
-		background-image: linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+		background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.10));
 	}
 
 	&:not(:disabled):focus {
-			outline: 2px solid $dark-text;
+		outline: 2px solid c.$dark-text;
 	}
 
 	&:disabled,
 	&.narrow:disabled {
-		color: $gray-light;
-		background-color: $gray-lighter;
-		outline: 1px solid lighten($dark-background, 10%);
+		color: c.$gray-light;
+		background-color: c.$gray-lighter;
+		outline: 1px solid color.adjust(c.$dark-background, $lightness: 10%);
 		cursor: default;
 	}
 
@@ -40,9 +41,9 @@ button {
 	}
 
 	&.secondary {
-		color: $body-background;
-		background-color: lighten($main-color, 15%);
-		outline: 1px solid lighten($dark-background, 10%);
+		color: c.$body-background;
+		background-color: color.adjust(c.$main-color, $lightness: 15%);
+		outline: 1px solid color.adjust(c.$dark-background, $lightness: 10%);
 	}
 
 	&.narrow {

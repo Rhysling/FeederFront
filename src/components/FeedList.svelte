@@ -196,7 +196,8 @@
 						href="/"
 						on:click|preventDefault={() =>
 							removeFeedAsync(userId, feed.feedType, feed.feedId)}
-						title="Remove feed"><i class="fa-solid fa-trash-can" /></a
+						title="Remove feed"
+						aria-label="Remove feed"><i class="fa-solid fa-trash-can"></i></a
 					>{/if}
 			</div>
 		</div>
@@ -206,12 +207,12 @@
 {/each}
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
 
 	h1 {
 		display: block;
 		font-size: 1.5rem;
-		color: $dark-text;
+		color: c.$dark-text;
 		text-align: center;
 		margin-bottom: 1rem;
 	}
@@ -219,21 +220,21 @@
 	h2 {
 		display: block;
 		font-size: 1rem;
-		color: $body-text;
+		color: c.$body-text;
 		margin: 0.75rem 0 0.5rem;
-		border-bottom: 1px solid $body-text;
+		border-bottom: 1px solid c.$body-text;
 	}
 
 	h3 {
 		display: block;
 		font-weight: bold;
 		font-size: 1.15rem;
-		color: $main-color;
+		color: c.$main-color;
 	}
 
 	.description {
 		font-size: 0.9rem;
-		color: $main-color;
+		color: c.$main-color;
 	}
 
 	.feed {
@@ -259,11 +260,15 @@
 
 		i {
 			font-size: 1.5rem;
-			color: $main-color;
+			color: c.$main-color;
+
+			&:hover {
+				color: c.$link-hover-color;
+			}
 		}
 	}
 
-	@media screen and (max-width: $bp-small) {
+	@media screen and (max-width: c.$bp-small) {
 		.feed {
 			h3 {
 				font-size: 1rem;

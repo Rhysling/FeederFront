@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let ishome = false;
-
+	export let ishome = false;
 </script>
 
 <div class="container" class:ishome>
@@ -10,7 +9,7 @@
 </div>
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
 
 	.container {
 		display: flex;
@@ -18,37 +17,33 @@
 		justify-content: center;
 		width: 100%;
 		margin-top: 4rem;
-		background-color: $body-background;
-		border-top: 2px solid $dark-background;
+		background-color: c.$body-background;
+		border-top: 2px solid c.$dark-background;
 
-			@media screen and (max-width: $bp-small) {
+		@media screen and (max-width: c.$bp-small) {
+			margin-top: 0;
+		}
+
+		&.ishome {
+			margin-top: 25rem;
+
+			@media screen and (max-width: c.$bp-small) {
 				margin-top: 0;
 			}
-
-      &.ishome {
-        margin-top: 25rem;
-
-        @media screen and (max-width: $bp-small) {
-          margin-top: 0;
-        }
-      }
-
+		}
 	}
 
 	.content {
 		display: block;
 		padding: 1rem;
-		background-color: $body-background;
-		width: min($content-max-width, 90%);
+		background-color: c.$body-background;
+		width: min(c.$content-max-width, 90%);
 		min-height: 60vh;
 	}
 
-	
-
-	@media screen and (max-width: $bp-small) {
+	@media screen and (max-width: c.$bp-small) {
 		.content {
 			padding: 1rem 0;
 		}
 	}
-
 </style>

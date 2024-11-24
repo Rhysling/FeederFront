@@ -247,7 +247,7 @@
 		>
 	</div>
 	<div class="cover" class:is-hidden={!isLoading}>
-		<i class="fa-solid fa-circle-notch fa-spin" />
+		<i class="fa-solid fa-circle-notch fa-spin"></i>
 	</div>
 </div>
 <Modal {isShowModal} on:hide-modal={() => (isShowModal = false)}>
@@ -275,7 +275,8 @@
 </Modal>
 
 <style lang="scss">
-	@import "../styles/_custom-variables.scss";
+	@use "../styles/_custom-variables" as c;
+	@use "sass:color";
 
 	.cover {
 		position: absolute;
@@ -305,10 +306,10 @@
 			".      subtext    subtext"
 			"result result     resbtn";
 		border-radius: 8px;
-		border: 1px solid $gray-light;
+		border: 1px solid c.$gray-light;
 		padding: 0.3rem;
 		margin: 0 0 1rem;
-		background-color: lighten($link-color, 45%);
+		background-color: color.adjust(c.$link-color, $lightness: 45%);
 		position: relative;
 	}
 
@@ -316,7 +317,7 @@
 		grid-area: title;
 		padding: 0.5rem;
 		font-weight: bold;
-		color: $dark-text;
+		color: c.$dark-text;
 	}
 	.add-message {
 		grid-area: message;
@@ -378,17 +379,17 @@
 	}
 
 	.is-success {
-		color: $color-success;
-		background-color: $color-success-bg;
-		border: 1px solid $color-success;
+		color: c.$color-success;
+		background-color: c.$color-success-bg;
+		border: 1px solid c.$color-success;
 	}
 
 	.is-error {
-		color: $color-error;
-		background-color: $color-error-bg;
-		border: 1px solid $color-error;
+		color: c.$color-error;
+		background-color: c.$color-error-bg;
+		border: 1px solid c.$color-error;
 	}
 
-	@media screen and (max-width: $bp-small) {
+	@media screen and (max-width: c.$bp-small) {
 	}
 </style>
