@@ -1,25 +1,41 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+	type FeedListProps = {
+		userId: string | undefined;
+		isEdit: boolean;
+		feedToAdd: IFeed | null | undefined;
+		setFeedCountTotal: ((fct: number | undefined) => void) | undefined;
+		setFeedCountLimit: ((fcl: number | undefined) => void) | undefined;
+	};
+
+	type FeedBatch = {
+		feedType: string;
+		feeds: IFeed[];
+	};
+
 	import type { AxiosResponse } from "axios";
 	import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
 	import "../js/copy-to-clipboard";
 
-	interface IFeedBatch {
-		feedType: string;
-		feeds: IFeed[];
-	}
-
-	export let userId = "public-user";
-	export let isEdit = false;
-	export let feedToAdd: IFeed | null | undefined = null;
-
-	const dispatch = createEventDispatcher();
+	let {
+		userId = "public-user",
+		isEdit = false,
+		feedToAdd = null,
+		setFeedCountTotal,
+		setFeedCountLimit,
+	}: FeedListProps = $props();
 
 	let feeds: IFeed[] = [];
-	let feedBatches: IFeedBatch[] = [];
-	let userInfo: IUserInfo | undefined;
-	let feedListTitle = "";
+	let feedBatches: FeedBatch[] = $state([]);
+	let userInfo: IUserInfo | undefined = $state(undefined);
 	let burl = getBaseURL();
+
+	let feedListTitle: string = $derived.by(() => {
+		if (userId == "public-user") return "PUBLIC FEEDS";
+		if (!userInfo) return "";
+		return `Feeds for ${userInfo.fullName}`;
+	});
 
 	// Clean Id name for Copy Link button target
 	const cleanName = (id: string) => id.replace(/\W/g, "");
@@ -114,7 +130,7 @@
 		let f = feeds.find((a) => a._id == newFeed._id);
 		if (!f) {
 			feeds.push(newFeed);
-			dispatch("feed-count-total", feeds.length);
+			if (setFeedCountTotal) setFeedCountTotal(feeds.length);
 			makeBatches();
 		}
 	};
@@ -135,7 +151,7 @@
 		}
 
 		feeds = feeds.filter((f) => f.feedId != fid);
-		dispatch("feed-count-total", feeds.length);
+		if (setFeedCountTotal) setFeedCountTotal(feeds.length);
 		makeBatches();
 	};
 
@@ -143,25 +159,24 @@
 		userInfo = await getUserInfoAsync(uid);
 		if (!userInfo) {
 			feedBatches = [];
-			dispatch("feed-count-limit", undefined);
+			if (setFeedCountLimit) setFeedCountLimit(undefined);
 			return;
 		}
 
 		await loadFeeds(uid);
-		dispatch("feed-count-limit", userInfo.feedCountLimit);
-		dispatch("feed-count-total", feeds.length);
+		if (setFeedCountLimit) setFeedCountLimit(userInfo.feedCountLimit);
+		if (setFeedCountTotal) setFeedCountTotal(feeds.length);
 	};
 
 	// ** Reactives **
 
-	$: feedListTitle = userInfo
-		? userId == "public-user"
-			? "PUBLIC FEEDS"
-			: `Feeds for ${userInfo.fullName}`
-		: "";
-	$: addFeedAsync(feedToAdd);
+	$effect(() => {
+		addFeedAsync(feedToAdd);
+	});
 
-	$: refresh(userId);
+	$effect(() => {
+		refresh(userId);
+	});
 </script>
 
 <h1>{feedListTitle}</h1>
@@ -194,8 +209,10 @@
 			<div class="right">
 				{#if isEdit}<a
 						href="/"
-						on:click|preventDefault={() =>
-							removeFeedAsync(userId, feed.feedType, feed.feedId)}
+						onclick={(e) => {
+							e.preventDefault();
+							removeFeedAsync(userId, feed.feedType, feed.feedId);
+						}}
 						title="Remove feed"
 						aria-label="Remove feed"><i class="fa-solid fa-trash-can"></i></a
 					>{/if}

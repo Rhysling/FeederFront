@@ -1,28 +1,34 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import Container from "../components/Container.svelte";
 	import AddFeed from "../components/AddFeed.svelte";
 	import FeedList from "../components/FeedList.svelte";
 	import { user } from "../stores/user-store";
 
-	let feedCountTotal: number | undefined = undefined;
-	let feedCountLimit: number | undefined = undefined;
-	let feedToAdd: IFeed | null | undefined = null;
+	let feedCountTotal: number | undefined = $state(undefined);
+	let feedCountLimit: number | undefined = $state(undefined);
+	let feedToAdd: IFeed | null | undefined = $state(null);
 
-	const setFeedCountTotal = (e: CustomEvent<number>) =>
-		(feedCountTotal = e.detail);
-	const setFeedCountLimit = (e: CustomEvent<number>) =>
-		(feedCountLimit = e.detail);
-	const addFeed = (e: CustomEvent<IFeed>) => (feedToAdd = e.detail);
+	const setFeedCountTotal = (fct: number | undefined) => {
+		feedCountTotal = fct;
+	};
+	const setFeedCountLimit = (fcl: number | undefined) => {
+		feedCountLimit = fcl;
+	};
+	const addFeed = (feed: IFeed) => {
+		feedToAdd = feed;
+	};
 </script>
 
 <Container>
-	<AddFeed {feedCountTotal} {feedCountLimit} on:add-feed={addFeed} />
+	<AddFeed {feedCountTotal} {feedCountLimit} {addFeed} />
 	<FeedList
 		userId={$user.userId}
 		{feedToAdd}
 		isEdit={true}
-		on:feed-count-total={setFeedCountTotal}
-		on:feed-count-limit={setFeedCountLimit}
+		{setFeedCountTotal}
+		{setFeedCountLimit}
 	/>
 </Container>
 

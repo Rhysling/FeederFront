@@ -1,18 +1,143 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
+	type AddFeedProps = {
+		feedCountTotal: number | undefined;
+		feedCountLimit: number | undefined;
+		addFeed: (feed: IFeed) => void;
+	};
+
+	type StateNames = "initial" | "editing" | "missing" | "found" | "notfound";
+
 	import Modal from "../components/Modal.svelte";
 	import { fade } from "svelte/transition";
-	import { createEventDispatcher } from "svelte";
+	// import { createEventDispatcher } from "svelte";
 
 	import type { AxiosResponse } from "axios";
 	import { httpClient as ax } from "../stores/httpclient-store";
 
-	export let feedCountTotal: number | undefined = undefined;
-	export let feedCountLimit: number | undefined = undefined;
+	// export let feedCountTotal: number | undefined = undefined;
+	// export let feedCountLimit: number | undefined = undefined;
+	// const dispatch = createEventDispatcher();
 
-	const dispatch = createEventDispatcher();
+	let { feedCountTotal, feedCountLimit, addFeed }: AddFeedProps = $props();
 
-	let state = "initial"; // initial editing missing found notfound added
-	let isShowModal = false;
+	let stateName: StateNames = $state("initial"); // initial editing missing found notfound added
+	let screenName = $state("");
+	let result = $state("");
+
+	$effect(() => {
+		switch (stateName) {
+			case "initial":
+				screenName = "";
+				result = "";
+				break;
+			case "editing":
+				break;
+			case "missing":
+				screenName = "";
+				result = "Need a screen name for search.";
+				break;
+			case "found":
+			case "notfound":
+				//screenName = screenName.trim();
+				//result;
+				break;
+			default:
+				screenName = "Missing case";
+				result = "Missing case";
+		}
+
+		setMessage(feedCountTotal, feedCountLimit);
+	});
+
+	let isSuccess: boolean = $derived.by(() => {
+		switch (stateName) {
+			case "initial":
+				return false;
+			case "editing":
+				return false;
+			case "missing":
+				return false;
+			case "found":
+				return true;
+			case "notfound":
+				return false;
+			default:
+				return false;
+		}
+	});
+
+	let isError: boolean = $derived.by(() => {
+		switch (stateName) {
+			case "initial":
+				return false;
+			case "editing":
+				return false;
+			case "missing":
+				return true;
+			case "found":
+				return false;
+			case "notfound":
+				return true;
+			default:
+				return true;
+		}
+	});
+
+	let isEnabledSearch: boolean = $derived.by(() => {
+		switch (stateName) {
+			case "initial":
+				return false;
+			case "editing":
+				return true;
+			case "missing":
+				return false;
+			case "found":
+				return false;
+			case "notfound":
+				return false;
+			default:
+				return false;
+		}
+	});
+
+	let isEnabledAdd: boolean = $derived.by(() => {
+		switch (stateName) {
+			case "initial":
+				return false;
+			case "editing":
+				return false;
+			case "missing":
+				return false;
+			case "found":
+				return (feedCountTotal ?? 0) < (feedCountLimit ?? 0); // true if space left;
+			case "notfound":
+				return false;
+			default:
+				return false;
+		}
+	});
+
+	let isEnabledCancel: boolean = $derived.by(() => {
+		switch (stateName) {
+			case "initial":
+				return false;
+			case "editing":
+				return true;
+			case "missing":
+				return false;
+			case "found":
+				return true;
+			case "notfound":
+				return true;
+			default:
+				return false;
+		}
+	});
+
+	let isLoading = $state(false);
+	let isShowModal = $state(false);
 
 	let sources = [
 		//{ id: "tw", text: "Twitter" },
@@ -20,27 +145,17 @@
 		{ id: "go", text: "Go Comics" },
 		{ id: "ma", text: "Mastodon" },
 	];
-	let selectedSource = sources[0];
+	let selectedSource = $state(sources[0]);
 
-	let screenName = "";
-	let result = "";
-	let isSuccess = true;
-	let isError = false;
-	let isScreenNameError = false;
-	let isEnabledSearch = true;
-	let isEnabledAdd = false;
-	let isEnabledCancel = false;
-	let isLoading = false;
-
-	let addedResult = "";
-	let showAddedResult = false;
+	let addedResult = $state("");
+	let showAddedResult = $state(false);
 
 	let lookupFeed: IFeed | null | undefined = null;
-	let message = "";
+	let message = $state("");
 
 	//api/LookupSource/?feedType=xxx&screenName=yyy
 	const lookupFeedAsync = async () => {
-		if (!screenName.trim()) return;
+		if (!screenName) return;
 
 		isLoading = true;
 
@@ -53,63 +168,6 @@
 		} catch (error) {
 			isLoading = false;
 			console.error(error);
-		}
-	};
-
-	let setState = (state: string) => {
-		switch (state) {
-			case "initial":
-				screenName = "";
-				result = "";
-				addedResult = "";
-				isSuccess = false;
-				isError = false;
-				isScreenNameError = false;
-				isEnabledSearch = false;
-				isEnabledAdd = false;
-				isEnabledCancel = false;
-				lookupFeed = null;
-				break;
-			case "editing":
-				//screenName = "";
-				result = "";
-				isSuccess = false;
-				isError = false;
-				isScreenNameError = false;
-				isEnabledSearch = true;
-				isEnabledAdd = false;
-				isEnabledCancel = true;
-				break;
-			case "missing":
-				screenName = "";
-				result = "Need a screen name for search.";
-				isSuccess = false;
-				isError = true;
-				isScreenNameError = true;
-				isEnabledSearch = false;
-				isEnabledAdd = false;
-				isEnabledCancel = false;
-				break;
-			case "found":
-				//screenName = "";
-				//result = "";
-				isSuccess = true;
-				isError = false;
-				isScreenNameError = false;
-				isEnabledSearch = false;
-				isEnabledAdd = (feedCountTotal ?? 0) < (feedCountLimit ?? 0); // true if space left
-				isEnabledCancel = true;
-				break;
-			case "notfound":
-				//screenName = "";
-				//result = "";
-				isSuccess = false;
-				isError = true;
-				isScreenNameError = false;
-				isEnabledSearch = false;
-				isEnabledAdd = false;
-				isEnabledCancel = true;
-				break;
 		}
 	};
 
@@ -139,9 +197,8 @@
 
 	let setEditing = () => {
 		if (!screenName.trim()) {
-			screenName = "";
-			state = "initial";
-		} else state = "editing";
+			stateName = "initial";
+		} else stateName = "editing";
 	};
 
 	let search = async () => {
@@ -150,7 +207,7 @@
 		if (screenName.startsWith("@")) screenName = screenName.substring(1);
 
 		if (!screenName) {
-			state = "initial";
+			stateName = "initial";
 			return;
 		}
 
@@ -158,20 +215,22 @@
 
 		if (lookupFeed) {
 			result = "Found: " + lookupFeed.title;
-			state = "found";
+			stateName = "found";
 		} else {
 			result = "Not Found: " + screenName;
-			state = "notfound";
+			stateName = "notfound";
 		}
 	};
 
 	let add = () => {
-		dispatch("add-feed", lookupFeed);
+		if (!lookupFeed) return;
+
+		addFeed(lookupFeed);
 
 		addedResult = `Added ${screenName}!`;
 		result = "";
-		isEnabledAdd = false;
-		isEnabledCancel = false;
+		// isEnabledAdd = false;
+		// isEnabledCancel = false;
 		showAddedResult = true;
 
 		setTimeout(() => {
@@ -179,18 +238,15 @@
 		}, 2000);
 
 		setTimeout(() => {
-			state = "initial";
+			stateName = "initial";
 		}, 2500);
 	};
 
 	let cancel = () => {
-		state = "initial";
+		stateName = "initial";
 		const sn = document.getElementById("screenname");
 		if (sn) sn.focus();
 	};
-
-	$: setState(state);
-	$: setMessage(feedCountTotal, feedCountLimit);
 </script>
 
 <div class="add-feed">
@@ -210,19 +266,24 @@
 			id="screenname"
 			type="text"
 			bind:value={screenName}
-			on:keyup={() => setEditing()}
+			onkeyup={() => setEditing()}
 			placeholder="Screen name"
-			class:is-error={isScreenNameError}
+			class:is-error={isError}
 			style="width:100%; display:block;"
 		/>
 	</div>
 	<div class="add-subtext">
-		<a href="/" on:click|preventDefault={() => (isShowModal = true)}>Hint</a>
+		<a
+			href="/"
+			onclick={(e) => {
+				e.preventDefault();
+				isShowModal = true;
+			}}>Hint</a
+		>
 		- how to find screen names for {selectedSource.text}.
 	</div>
 	<div class="add-searchbtn">
-		<button on:click={() => search()} disabled={!isEnabledSearch}>Search</button
-		>
+		<button onclick={() => search()} disabled={!isEnabledSearch}>Search</button>
 	</div>
 	<div class="add-result" class:is-success={isSuccess} class:is-error={isError}>
 		{result}
@@ -235,13 +296,13 @@
 	<div class="add-resbtn">
 		<button
 			class="narrow"
-			on:click={() => add()}
+			onclick={() => add()}
 			style="width:100%;"
 			disabled={!isEnabledAdd}>Add Feed</button
 		>
 		<button
 			class="secondary narrow"
-			on:click={() => cancel()}
+			onclick={() => cancel()}
 			style="width:100%; margin:0;"
 			disabled={!isEnabledCancel}>Cancel</button
 		>

@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import Container from "../components/Container.svelte";
 	import AddFeed from "../components/AddFeed.svelte";
@@ -5,18 +7,22 @@
 	import type { AxiosResponse } from "axios";
 	import { httpClient as ax } from "../stores/httpclient-store";
 
-	let userList: IUserInfo[] = [];
-	let currentUser: IUserInfo | undefined;
+	let userList: IUserInfo[] = $state([]);
+	let currentUser: IUserInfo | undefined = $state(undefined);
 
-	let feedCountTotal: number | undefined = undefined;
-	let feedCountLimit: number | undefined = undefined;
-	let feedToAdd: IFeed | null | undefined = null;
+	let feedCountTotal: number | undefined = $state(undefined);
+	let feedCountLimit: number | undefined = $state(undefined);
+	let feedToAdd: IFeed | null | undefined = $state(null);
 
-	const setFeedCountTotal = (e: CustomEvent<number>) =>
-		(feedCountTotal = e.detail);
-	const setFeedCountLimit = (e: CustomEvent<number>) =>
-		(feedCountLimit = e.detail);
-	const addFeed = (e: CustomEvent<IFeed>) => (feedToAdd = e.detail);
+	const setFeedCountTotal = (fct: number | undefined) => {
+		feedCountTotal = fct;
+	};
+	const setFeedCountLimit = (fcl: number | undefined) => {
+		feedCountLimit = fcl;
+	};
+	const addFeed = (feed: IFeed) => {
+		feedToAdd = feed;
+	};
 
 	const loadUsers = async () => {
 		try {
@@ -37,7 +43,7 @@
 <Container>
 	<h1>Admin User Feeds</h1>
 	<div class="user-select">
-		<select bind:value={currentUser} on:change={() => {}}>
+		<select bind:value={currentUser} onchange={() => {}}>
 			{#each userList as u}
 				<option value={u}>
 					{u.fullName}
@@ -49,13 +55,13 @@
 		</div>
 	</div>
 
-	<AddFeed {feedCountTotal} {feedCountLimit} on:add-feed={addFeed} />
+	<AddFeed {feedCountTotal} {feedCountLimit} {addFeed} />
 	<FeedList
 		userId={currentUser?.userId || undefined}
 		{feedToAdd}
 		isEdit={true}
-		on:feed-count-total={setFeedCountTotal}
-		on:feed-count-limit={setFeedCountLimit}
+		{setFeedCountTotal}
+		{setFeedCountLimit}
 	/>
 </Container>
 
