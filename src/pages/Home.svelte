@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	//import { onMount } from 'svelte';
 	import Container from "../components/Container.svelte";
@@ -7,9 +9,9 @@
 	import { httpClient as ax } from "../stores/httpclient-store";
 
 	// *** Begin Testing ***
-	let unsecuredVal = "Empty";
-	let securedVal = "Empty";
-	let adminVal = "Empty";
+	let unsecuredVal = $state("Empty");
+	let securedVal = $state("Empty");
+	let adminVal = $state("Empty");
 
 	const getUnsecured = () => {
 		$ax
@@ -51,18 +53,33 @@
 	{#if false}
 		<h1>Test request no auth</h1>
 		<div>Unsecured value: {unsecuredVal}</div>
-		<button on:click|preventDefault={getUnsecured}>Get Unsecured</button>
+		<button
+			onclick={(e) => {
+				e.preventDefault();
+				getUnsecured();
+			}}>Get Unsecured</button
+		>
 
 		<h1>Test request with auth</h1>
 		<div>Secured value: {securedVal}</div>
-		<button on:click|preventDefault={getSecured}>Get Secured</button>
+		<button
+			onclick={(e) => {
+				e.preventDefault();
+				getSecured();
+			}}>Get Secured</button
+		>
 
 		<h1>Test requires admin</h1>
 		<div>Unsecured value: {adminVal}</div>
-		<button on:click|preventDefault={getAdmin}>Get Admin</button>
+		<button
+			onclick={(e) => {
+				e.preventDefault();
+				getAdmin();
+			}}>Get Admin</button
+		>
 	{/if}
 
-	<FeedList />
+	<FeedList userId={"public-user"} isEdit={false} />
 </Container>
 
 <style lang="scss">

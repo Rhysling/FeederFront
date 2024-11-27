@@ -4,9 +4,9 @@
 	type FeedListProps = {
 		userId: string | undefined;
 		isEdit: boolean;
-		feedToAdd: IFeed | null | undefined;
-		setFeedCountTotal: ((fct: number | undefined) => void) | undefined;
-		setFeedCountLimit: ((fcl: number | undefined) => void) | undefined;
+		feedToAdd?: IFeed | null | undefined;
+		setFeedCountTotal?: ((fct: number | undefined) => void) | undefined;
+		setFeedCountLimit?: ((fcl: number | undefined) => void) | undefined;
 	};
 
 	type FeedBatch = {
@@ -14,6 +14,7 @@
 		feeds: IFeed[];
 	};
 
+	//import { fade } from "svelte/transition";
 	import type { AxiosResponse } from "axios";
 	import { httpClient as ax, getBaseURL } from "../stores/httpclient-store";
 	import "../js/copy-to-clipboard";
