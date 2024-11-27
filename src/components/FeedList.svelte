@@ -29,6 +29,7 @@
 	let feeds: IFeed[] = [];
 	let feedBatches: FeedBatch[] = $state([]);
 	let userInfo: IUserInfo | undefined = $state(undefined);
+	let isFeedsLoaded: boolean = $state(false);
 	let burl = getBaseURL();
 
 	let feedListTitle: string = $derived.by(() => {
@@ -63,13 +64,17 @@
 	};
 
 	const loadFeeds = async (uid: string) => {
+		isFeedsLoaded = false;
+		feeds = [];
 		feeds = (await getFeedsAsync(uid)) ?? [];
 		if (!feeds.length) {
 			feedBatches = [];
+			isFeedsLoaded = true;
 			return;
 		}
 
 		makeBatches();
+		isFeedsLoaded = true;
 	};
 
 	const makeBatches = () => {
@@ -181,47 +186,51 @@
 
 <h1>{feedListTitle}</h1>
 
-{#each feedBatches as fb}
-	<h2>{fb.feedType}</h2>
-	{#each fb.feeds as feed}
-		<div class="feed">
-			<div class="left">
-				<h3>{feed.title}</h3>
-				{#if feed.description && feed.description != feed.title}<div
-						class="description"
+{#if isFeedsLoaded}
+	{#each feedBatches as fb}
+		<h2>{fb.feedType}</h2>
+		{#each fb.feeds as feed}
+			<div class="feed">
+				<div class="left">
+					<h3>{feed.title}</h3>
+					{#if feed.description && feed.description != feed.title}<div
+							class="description"
+						>
+							{feed.description}
+						</div>{/if}
+					<a
+						href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}"
+						target="_blank"
+						rel="noreferrer"
+						id="inp-{feed.feedType}-{cleanName(feed.feedId)}"
+						class="link"
+						>{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a
 					>
-						{feed.description}
-					</div>{/if}
-				<a
-					href="{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}"
-					target="_blank"
-					rel="noreferrer"
-					id="inp-{feed.feedType}-{cleanName(feed.feedId)}"
-					class="link"
-					>{burl}/api/feeds/{userInfo?.subscriptionKey}/{feed.feedType}/{feed.feedId}</a
-				>
-				<button
-					class="small"
-					data-copytarget="#inp-{feed.feedType}-{cleanName(feed.feedId)}"
-					>Copy Link</button
-				>
+					<button
+						class="small"
+						data-copytarget="#inp-{feed.feedType}-{cleanName(feed.feedId)}"
+						>Copy Link</button
+					>
+				</div>
+				<div class="right">
+					{#if isEdit}<a
+							href="/"
+							onclick={(e) => {
+								e.preventDefault();
+								removeFeedAsync(userId, feed.feedType, feed.feedId);
+							}}
+							title="Remove feed"
+							aria-label="Remove feed"><i class="fa-solid fa-trash-can"></i></a
+						>{/if}
+				</div>
 			</div>
-			<div class="right">
-				{#if isEdit}<a
-						href="/"
-						onclick={(e) => {
-							e.preventDefault();
-							removeFeedAsync(userId, feed.feedType, feed.feedId);
-						}}
-						title="Remove feed"
-						aria-label="Remove feed"><i class="fa-solid fa-trash-can"></i></a
-					>{/if}
-			</div>
-		</div>
+		{/each}
+	{:else}
+		<h2>No Feeds</h2>
 	{/each}
 {:else}
-	<h2>No Feeds</h2>
-{/each}
+	<h2>Loading...</h2>
+{/if}
 
 <style lang="scss">
 	@use "../styles/_custom-variables" as c;
