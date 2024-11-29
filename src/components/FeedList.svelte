@@ -32,6 +32,7 @@
 	let userInfo: IUserInfo | undefined = $state(undefined);
 	let isFeedsLoaded: boolean = $state(false);
 	let burl = getBaseURL();
+	let userIdOriginal: string | undefined = undefined;
 
 	let feedListTitle: string = $derived.by(() => {
 		if (userId == "public-user") return "PUBLIC FEEDS";
@@ -181,7 +182,12 @@
 	});
 
 	$effect(() => {
+		if (userId === userIdOriginal) return;
+
 		refresh(userId);
+		//$inspect(userIdOriginal);
+		userIdOriginal = userId;
+		//$inspect(userId).with(console.trace);
 	});
 </script>
 

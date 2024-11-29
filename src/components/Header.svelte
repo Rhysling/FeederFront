@@ -26,7 +26,6 @@
 
 		let r = p.children?.filter((a) => !a.isHidden && a.isAdmin == isAdmin);
 
-		console.log({ r });
 		return r || [];
 	});
 
